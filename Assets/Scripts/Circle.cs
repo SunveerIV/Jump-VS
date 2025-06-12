@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Circle : MonoBehaviour {
     public Rigidbody2D RB;
@@ -14,16 +13,16 @@ public class Circle : MonoBehaviour {
     
     public Level level;
     
-    public bool hasStuck = false;
+    public bool hasStuck;
 
 
     private void Start() {
         mainCamera = Camera.main;
         minY = mainCamera.transform.position.y;
+        hasStuck = false;
     }
 
     private void Update() {
-
         if (hasStuck && Input.GetMouseButtonDown(0)) {
             Director tempDirector = Instantiate(director, transform.position, Quaternion.identity);
             tempDirector.transform.SetParent(transform);
@@ -37,24 +36,29 @@ public class Circle : MonoBehaviour {
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.CompareTag("Platform")) {
-            if (transform.position.y > collision.transform.position.y && hasStuck == false) {
-                audioSource.PlayOneShot(stickSound);
-                level.UpdateScore(1.5f - Mathf.Abs(collision.transform.position.x - transform.position.x));
-                RB.linearVelocity = Vector2.zero;
-                transform.position = new Vector2(collision.transform.position.x, collision.transform.position.y + 0.2f);
-                hasStuck = true;
-                LockToPlatform(collision.gameObject);
+        switch (collision.gameObject.tag) {
+            case "Platform": {
+                if (transform.position.y > collision.transform.position.y && hasStuck == false) {
+                    audioSource.PlayOneShot(stickSound);
+                    level.UpdateScore(1.5f - Mathf.Abs(collision.transform.position.x - transform.position.x));
+                    RB.linearVelocity = Vector2.zero;
+                    transform.position = new Vector2(collision.transform.position.x, collision.transform.position.y + 0.2f);
+                    hasStuck = true;
+                    transform.SetParent(collision.transform);
+                }
+                break;
             }
-        } else if (collision.gameObject.CompareTag("Border")) {
-            audioSource.PlayOneShot(bounceSound);
-            level.CachedBounces += 1;
-        } else if (collision.gameObject.CompareTag("BottomCollider")) {
-            level.EndSingleplayer();
-        }
-    }
 
-    public void LockToPlatform(GameObject platform) {
-        transform.SetParent(platform.transform);
+            case "Border": {
+                audioSource.PlayOneShot(bounceSound);
+                level.CachedBounces += 1;
+                break;
+            }
+
+            case "BottomCollider": {
+                level.EndSingleplayer();
+                break;
+            }
+        }
     }
 }
