@@ -1,19 +1,18 @@
 using UnityEngine;
 
 public class Circle : MonoBehaviour {
-    public Rigidbody2D RB;
-    [SerializeField] private float minY;
     [SerializeField] private Director director;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip stickSound;
     [SerializeField] private AudioClip bounceSound;
     [SerializeField] private AudioClip failSong;
+    
+    public Rigidbody2D RB;
+    public Level level;
+    public bool hasStuck;
 
     private Camera mainCamera;
-    
-    public Level level;
-    
-    public bool hasStuck;
+    private float minY;
 
 
     private void Start() {
@@ -37,7 +36,7 @@ public class Circle : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision) {
         switch (collision.gameObject.tag) {
-            case "Platform": {
+            case "Platform" : {
                 if (transform.position.y > collision.transform.position.y && hasStuck == false) {
                     audioSource.PlayOneShot(stickSound);
                     level.UpdateScore(1.5f - Mathf.Abs(collision.transform.position.x - transform.position.x));
@@ -49,14 +48,14 @@ public class Circle : MonoBehaviour {
                 break;
             }
 
-            case "Border": {
+            case "Border" : {
                 audioSource.PlayOneShot(bounceSound);
                 level.CachedBounces += 1;
                 break;
             }
 
-            case "BottomCollider": {
-                level.EndSingleplayer();
+            case "BottomCollider" : {
+                level.EndGame();
                 break;
             }
         }
