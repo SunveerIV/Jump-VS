@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Level : MonoBehaviour {
     [SerializeField] private Platform platformGameObject;
@@ -101,7 +99,7 @@ public class Level : MonoBehaviour {
         CachedBounces = 0;
     }
 
-    public void EndSingleplayer() {
+    public void EndGame() {
         if (score > PlayerPrefs.GetFloat("High Score")) {
             PlayerPrefs.SetFloat("High Score", score);
         }

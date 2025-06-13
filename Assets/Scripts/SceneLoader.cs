@@ -1,20 +1,22 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader : MonoBehaviour 
-{
+public class SceneLoader : MonoBehaviour {
+    private const string GAME_SCENE_NAME = "Core Game";
+    
     private void Awake() {
         Application.targetFrameRate = 60;
     }
 
-    public void LoadSingleplayer() {
-        SceneManager.LoadScene("Core Game");
+    public static void LoadGame() {
+        SceneManager.LoadScene(GAME_SCENE_NAME);
     }
 
-    public void LoadStartMenu() {
+    public static void LoadStartMenu() {
         SceneManager.LoadScene(0);
     }
-    public void QuitGame() {
+    
+    public static void QuitGame() {
         Application.Quit();
     }
 }

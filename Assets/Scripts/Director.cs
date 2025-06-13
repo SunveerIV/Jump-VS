@@ -1,10 +1,11 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Director : MonoBehaviour {
 
-    private static readonly Vector2 SCALE_SCALE = new Vector2(5, 5);
-    private static readonly Vector2 VELOCITY_AMPLIFIER = new Vector2(4, 4);
+    private const float VELOCITY_AMPLIFIER = 4f;
+    private const float SCALE_SCALE = 5f;
+    private const float MAX_DISTANCE = 3f;
+    
     public Camera mainCamera;
     public Circle player;
 
@@ -19,28 +20,45 @@ public class Director : MonoBehaviour {
         CheckDelete();
     }
 
+    /// <summary>
+    /// Moves the object within +/- MAX_DISTANCE around the player's position based on touch input or mouse position.
+    /// </summary>
     private void Move() {
-        Vector3 InputPosition;
+        Vector2 inputPosition;
         if (Input.touchCount > 0) {
-            InputPosition = Input.GetTouch(0).position;
+            inputPosition = Input.GetTouch(0).position;
         } else {
-            InputPosition = Input.mousePosition;
+            inputPosition = Input.mousePosition;
         }
         Vector2 CirclePos = player.transform.position;
-        transform.position = new Vector2(Mathf.Clamp(mainCamera.ScreenToWorldPoint(InputPosition).x, CirclePos.x - 3f, CirclePos.x + 3f), Mathf.Clamp(mainCamera.ScreenToWorldPoint(InputPosition).y, CirclePos.y - 3f, CirclePos.y + 3f));
+        float inputWorldPosX = Mathf.Clamp(mainCamera.ScreenToWorldPoint(inputPosition).x, CirclePos.x - MAX_DISTANCE, CirclePos.x + MAX_DISTANCE);
+        float inputWorldPosY = Mathf.Clamp(mainCamera.ScreenToWorldPoint(inputPosition).y, CirclePos.y - MAX_DISTANCE, CirclePos.y + MAX_DISTANCE);
+        transform.position = new Vector2(inputWorldPosX, inputWorldPosY);
+    }
 
+    /// <summary>
+    /// Rotates the director to always face away from the player's position.
+    /// </summary>
+    private void Rotate() {
+        float distanceX = transform.position.x - player.transform.position.x;
+        float distanceY = transform.position.y - player.transform.position.y;
+        float rotationAngle = Mathf.Atan2(distanceY, distanceX) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, rotationAngle);
     }
     
-    private void Rotate() {
-        float angle = 180f + Mathf.Atan2(player.transform.position.y - transform.position.y, player.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
-    }
-
+    /// <summary>
+    /// Scales the director based on its distance from the player.
+    /// </summary>
     private void Scale() {
         float distance = Vector2.Distance(player.transform.position, transform.position);
-        transform.localScale = new Vector2(distance, distance) * SCALE_SCALE;
+        transform.localScale = new Vector2(distance * SCALE_SCALE, distance * SCALE_SCALE);
     }
-
+    
+    /// <summary>
+    /// If the player releases the mouse button or finger, the director gets destroyed.
+    /// Additionally, the player's parent is removed, and velocity is set to
+    /// the difference between the player's position and the director's position.
+    /// </summary>
     private void CheckDelete() {
         if (Input.GetMouseButtonUp(0)) {
             player.transform.SetParent(null);
