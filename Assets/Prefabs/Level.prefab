@@ -45,9 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platformGameObject: {fileID: -6840045358517189539, guid: 43e991d18e14840c8b648c5f8b14c895, type: 3}
-  circleGameObject: {fileID: 4509458172391385669, guid: 30944b292ad7e4d2195c9dae87499d5f, type: 3}
+  playerGameObject: {fileID: 4509458172391385669, guid: 30944b292ad7e4d2195c9dae87499d5f, type: 3}
   scoreText: {fileID: 4967080562395045210, guid: 5ec644eaa34b24a38b5c29096b5cea3b, type: 3}
   FPSText: {fileID: 2511218217023067117, guid: 34bdae6a84e8b4012b78364f1094fd76, type: 3}
-  highestPlatform: 0
+  highScoreText: {fileID: 0}
   CachedScore: 0
   CachedBounces: 0

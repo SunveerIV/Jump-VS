@@ -1,18 +1,17 @@
 using UnityEngine;
 
 public class Director : MonoBehaviour {
-
-    private const float VELOCITY_AMPLIFIER = 4f;
+    
     private const float SCALE_SCALE = 5f;
     private const float MAX_DISTANCE = 3f;
-    
-    public Camera mainCamera;
-    public Circle player;
+
+    private Camera mainCamera;
+    private Player player;
 
     private void Start() {
         mainCamera = Camera.main;
     }
-    
+
     private void Update() {
         Move();
         Rotate();
@@ -27,7 +26,8 @@ public class Director : MonoBehaviour {
         Vector2 inputPosition;
         if (Input.touchCount > 0) {
             inputPosition = Input.GetTouch(0).position;
-        } else {
+        }
+        else {
             inputPosition = Input.mousePosition;
         }
         Vector2 CirclePos = player.transform.position;
@@ -45,7 +45,7 @@ public class Director : MonoBehaviour {
         float rotationAngle = Mathf.Atan2(distanceY, distanceX) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, rotationAngle);
     }
-    
+
     /// <summary>
     /// Scales the director based on its distance from the player.
     /// </summary>
@@ -53,7 +53,7 @@ public class Director : MonoBehaviour {
         float distance = Vector2.Distance(player.transform.position, transform.position);
         transform.localScale = new Vector2(distance * SCALE_SCALE, distance * SCALE_SCALE);
     }
-    
+
     /// <summary>
     /// If the player releases the mouse button or finger, the director gets destroyed.
     /// Additionally, the player's parent is removed, and velocity is set to
@@ -62,9 +62,16 @@ public class Director : MonoBehaviour {
     private void CheckDelete() {
         if (Input.GetMouseButtonUp(0)) {
             player.transform.SetParent(null);
-            player.hasStuck = false;
-            player.RB.linearVelocity = (transform.position - player.transform.position) * VELOCITY_AMPLIFIER;
+            player.HasStuck = false;
+            player.Launch(transform.position);
             Destroy(gameObject);
         }
+    }
+
+    public static Director Create(Director prefab, Vector3 position, Quaternion rotation, Player player) {
+        Director director = Instantiate(prefab, position, rotation);
+        director.player = player;
+        director.transform.SetParent(player.transform);
+        return director;
     }
 }

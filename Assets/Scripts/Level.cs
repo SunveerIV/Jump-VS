@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.Serialization;
 
 public class Level : MonoBehaviour {
     [SerializeField] private Platform platformGameObject;
-    [SerializeField] private Circle circleGameObject;
+    [SerializeField] private Player playerGameObject;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI FPSText;
     [SerializeField] private TextMeshProUGUI highScoreText;
@@ -16,7 +17,7 @@ public class Level : MonoBehaviour {
     private const float MAX_DIFFERENCE = 6f;
     private const float PLAYER_START_Y = 1.6f;
     
-    private List<Circle> players;
+    private List<Player> players;
     private List<Platform> platforms;
     
     private float highestPlatform;
@@ -32,9 +33,8 @@ public class Level : MonoBehaviour {
         highestPlatform = -1f;
         InstantiatePlatform();
         float playerStartPosX = platforms[0].transform.position.x;
-        players = new List<Circle>();
-        Circle player = (Instantiate(circleGameObject, new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity));
-        player.level = this;
+        players = new List<Player>();
+        Player player = Player.Create(playerGameObject, new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
         players.Add(player);
         StartCoroutine(UpdateEverySecond());
         highScoreText.text = "High Score: " + PlayerPrefs.GetFloat("High Score", 0);
@@ -55,7 +55,7 @@ public class Level : MonoBehaviour {
     private void UpdatePlatforms() {
         float highestCircle = float.MinValue;
         float lowestCircle = float.MaxValue;
-        foreach (Circle player in players) {
+        foreach (Player player in players) {
             if (player.transform.position.y > highestCircle) {
                 highestCircle = player.transform.position.y;
             }
@@ -80,9 +80,8 @@ public class Level : MonoBehaviour {
 
     private void InstantiatePlatform() {
         highestPlatform += 2f;
-        Platform plat = Instantiate(platformGameObject, new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform), Quaternion.identity);
-        plat.level = this;
-        platforms.Add(plat);
+        Platform platform = Platform.Create(platformGameObject, new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform), Quaternion.identity, this);
+        platforms.Add(platform);
     }
 
     public void UpdateScore(float difference) {
