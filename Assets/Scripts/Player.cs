@@ -1,17 +1,26 @@
 using UnityEngine;
 
-public class Circle : MonoBehaviour {
+public class Player : MonoBehaviour {
+    private const float VELOCITY_AMPLIFIER = 4f;
+    
     [SerializeField] private Director director;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip stickSound;
     [SerializeField] private AudioClip bounceSound;
     [SerializeField] private AudioClip failSong;
+    [SerializeField] private Rigidbody2D RB;
     
-    public Rigidbody2D RB;
-    public Level level;
-    public bool hasStuck;
-
+    private Level level;
     private Camera mainCamera;
+    
+    private bool hasStuck;
+
+    public bool HasStuck {
+        get => hasStuck;
+        set => hasStuck = value;
+    }
+
+
     private float minY;
 
 
@@ -23,11 +32,9 @@ public class Circle : MonoBehaviour {
 
     private void Update() {
         if (hasStuck && Input.GetMouseButtonDown(0)) {
-            Director tempDirector = Instantiate(director, transform.position, Quaternion.identity);
-            tempDirector.transform.SetParent(transform);
-            tempDirector.player = this;
-        } 
-        
+            Director.Create(director, transform.position, transform.rotation, this);
+        }
+
         if (transform.position.y >= minY) {
             minY = transform.position.y;
             mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, transform.position.y, -1f);
@@ -36,7 +43,7 @@ public class Circle : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision) {
         switch (collision.gameObject.tag) {
-            case "Platform" : {
+            case "Platform": {
                 if (transform.position.y > collision.transform.position.y && hasStuck == false) {
                     audioSource.PlayOneShot(stickSound);
                     level.UpdateScore(1.5f - Mathf.Abs(collision.transform.position.x - transform.position.x));
@@ -48,16 +55,26 @@ public class Circle : MonoBehaviour {
                 break;
             }
 
-            case "Border" : {
+            case "Border": {
                 audioSource.PlayOneShot(bounceSound);
                 level.CachedBounces += 1;
                 break;
             }
 
-            case "BottomCollider" : {
+            case "BottomCollider": {
                 level.EndGame();
                 break;
             }
         }
+    }
+
+    public void Launch(Vector3 directorPosition) {
+        RB.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
+    }
+
+    public static Player Create(Player prefab, Vector3 position, Quaternion rotation, Level level) {
+        Player player = Instantiate(prefab, position, rotation);
+        player.level = level;
+        return player;
     }
 }

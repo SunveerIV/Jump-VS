@@ -6,15 +6,15 @@ public class Platform : MonoBehaviour {
     
     private bool hasPassed = false;
     private int velocityAmplifier;
-    public Circle player;
-    public Level level;
+    private Player player;
+    private Level level;
     
     int Direction;
     private void Start() {
         if(Random.Range(1, 5) == 1) {
             velocityAmplifier = 2;
         }
-        player = FindFirstObjectByType<Circle>();
+        player = FindFirstObjectByType<Player>();
 
     }
     private void Update() {
@@ -26,6 +26,12 @@ public class Platform : MonoBehaviour {
             level.CachedScore--;
             hasPassed = false;
         }
+    }
+
+    public static Platform Create(Platform prefab, Vector3 position, Quaternion rotation, Level level) {
+        Platform platform = Instantiate(prefab, position, rotation);
+        platform.level = level;
+        return platform;
     }
 /*
     public void checkDelete(float lowestCircle) {
