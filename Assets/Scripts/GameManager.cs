@@ -9,34 +9,37 @@ public class GameManager : MonoBehaviour {
 
     public Level level;
         
-    void Start() {
+    private void Start() {
         DontDestroyOnLoad(gameObject);
     }
 
-    void OnEnable() {
+    private void OnEnable() {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    void OnDisable() {
+    private void OnDisable() {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         audioSource.Stop();
         level = FindFirstObjectByType<Level>();
         
         switch (scene.name) {
             case "Core Game" : {
-                audioSource.PlayOneShot(gameMusic);
-                audioSource.loop = true;
+                PlaySong(gameMusic);
                 break;
             }
 
             case "Singleplayer End Screen" : {
-                audioSource.PlayOneShot(failSong);
-                audioSource.loop = true;
+                PlaySong(failSong);
                 break;
             }
         }
+    }
+
+    private void PlaySong(AudioClip song) {
+        audioSource.PlayOneShot(song);
+        audioSource.loop = true;
     }
 }
