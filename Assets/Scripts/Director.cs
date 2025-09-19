@@ -24,12 +24,16 @@ public class Director : MonoBehaviour {
     /// </summary>
     private void Move() {
         Vector2 inputPosition;
-        if (Input.touchCount > 0) {
-            inputPosition = Input.GetTouch(0).position;
-        }
-        else {
+        #if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX || UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             inputPosition = Input.mousePosition;
-        }
+        #elif UNITY_IOS || UNITY_ANDROID
+            if (Input.touchCount > 0) {
+                inputPosition = Input.GetTouch(0).position;
+            }
+            else {
+                inputPosition = Vector2.zero;
+            }
+        #endif
         Vector2 CirclePos = player.transform.position;
         float inputWorldPosX = Mathf.Clamp(mainCamera.ScreenToWorldPoint(inputPosition).x, CirclePos.x - MAX_DISTANCE, CirclePos.x + MAX_DISTANCE);
         float inputWorldPosY = Mathf.Clamp(mainCamera.ScreenToWorldPoint(inputPosition).y, CirclePos.y - MAX_DISTANCE, CirclePos.y + MAX_DISTANCE);
