@@ -14,16 +14,18 @@ public class Player : MonoBehaviour {
     private Camera mainCamera;
     
     private bool hasStuck;
+    private int previousPlatformIndex;
+    private int cachedBorderBounces;
+    private float minY;
+    private float score;
+    private float lastScore;
 
     public bool HasStuck {
-        get => hasStuck;
         set => hasStuck = value;
     }
 
-
-    private float minY;
-
-
+    public float Score => score;
+    
     private void Start() {
         mainCamera = Camera.main;
         minY = mainCamera.transform.position.y;
@@ -41,12 +43,30 @@ public class Player : MonoBehaviour {
         }
     }
 
+    private void UpdateScore(float xPosDifference, int platformDifferential) {
+        
+        if (platformDifferential > 0) {
+            lastScore = platformDifferential * Mathf.Pow(1.3f, cachedBorderBounces) * Mathf.Pow(xPosDifference, 12);
+            score += lastScore;
+        } else if(platformDifferential < 0) {
+            score -= lastScore;
+            lastScore = 0;
+        }
+
+        level.UpdateScore();
+    }
+    
     private void OnCollisionEnter2D(Collision2D collision) {
         switch (collision.gameObject.tag) {
             case "Platform": {
                 if (transform.position.y > collision.transform.position.y && hasStuck == false) {
                     audioSource.PlayOneShot(stickSound);
-                    level.UpdateScore(1.5f - Mathf.Abs(collision.transform.position.x - transform.position.x));
+                    
+                    int platformIndex = collision.gameObject.GetComponent<Platform>().Index;
+                    UpdateScore(1.5f - Mathf.Abs(collision.transform.position.x - transform.position.x), platformIndex - previousPlatformIndex);
+                    previousPlatformIndex = platformIndex; ;
+                    cachedBorderBounces = 0;
+                    
                     RB.linearVelocity = Vector2.zero;
                     transform.position = new Vector2(collision.transform.position.x, collision.transform.position.y + 0.2f);
                     hasStuck = true;
@@ -57,7 +77,7 @@ public class Player : MonoBehaviour {
 
             case "Border": {
                 audioSource.PlayOneShot(bounceSound);
-                level.CachedBounces += 1;
+                cachedBorderBounces++;
                 break;
             }
 

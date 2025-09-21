@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
-using UnityEngine.Serialization;
 
 public class Level : MonoBehaviour {
     [SerializeField] private Platform platformGameObject;
@@ -11,8 +10,6 @@ public class Level : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI FPSText;
     [SerializeField] private TextMeshProUGUI highScoreText;
-    
-    
 
     private const float MAX_DIFFERENCE = 6f;
     private const float PLAYER_START_Y = 1.6f;
@@ -21,12 +18,8 @@ public class Level : MonoBehaviour {
     private List<Platform> platforms;
     
     private float highestPlatform;
-    private float score = 0;
-    
-    public int CachedScore = 0;
-    public int CachedBounces = 0;
 
-    private float lastScore;
+    private int platformIndex = 0;
 
     private void Start() {
         platforms = new List<Platform>();
@@ -80,27 +73,18 @@ public class Level : MonoBehaviour {
 
     private void InstantiatePlatform() {
         highestPlatform += 2f;
-        Platform platform = Platform.Create(platformGameObject, new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform), Quaternion.identity, this);
+        Platform platform = Platform.Create(platformGameObject, new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform), Quaternion.identity, platformIndex);
+        platformIndex++;
         platforms.Add(platform);
     }
 
-    public void UpdateScore(float difference) {
-
-        if (CachedScore > 0) {
-            lastScore = CachedScore * Mathf.Pow(1.3f, CachedBounces) * Mathf.Pow(difference, 12);
-            score += lastScore;
-        } else if(CachedScore < 0) {
-            score -= lastScore;
-            lastScore = 0;
-        }
-        scoreText.text = score.ToString();
-        CachedScore = 0;
-        CachedBounces = 0;
+    public void UpdateScore() {
+        scoreText.text = players[0].Score.ToString();
     }
 
     public void EndGame() {
-        if (score > PlayerPrefs.GetFloat("High Score")) {
-            PlayerPrefs.SetFloat("High Score", score);
+        if (players[0].Score > PlayerPrefs.GetFloat("High Score")) {
+            PlayerPrefs.SetFloat("High Score", players[0].Score);
         }
         SceneManager.LoadScene("Singleplayer End Screen");
     }
