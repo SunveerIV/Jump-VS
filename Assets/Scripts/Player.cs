@@ -1,6 +1,7 @@
+using Interfaces;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour, ILaunchable {
     private const float VELOCITY_AMPLIFIER = 4f;
     
     [SerializeField] private Director director;
