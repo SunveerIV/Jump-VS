@@ -66,8 +66,6 @@ public class Director : MonoBehaviour {
     /// </summary>
     private void CheckDelete() {
         if (Input.GetMouseButtonUp(0)) {
-            launchable.transform.SetParent(null);
-            launchable.HasStuck = false;
             launchable.Launch(transform.position);
             Destroy(gameObject);
         }
