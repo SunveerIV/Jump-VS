@@ -21,10 +21,6 @@ public class Player : MonoBehaviour, ILaunchable {
     private float score;
     private float lastScore;
 
-    public bool HasStuck {
-        set => hasStuck = value;
-    }
-
     public float Score => score;
     
     private void Start() {
@@ -90,6 +86,8 @@ public class Player : MonoBehaviour, ILaunchable {
     }
 
     public void Launch(Vector3 directorPosition) {
+        hasStuck = false;
+        transform.SetParent(null);
         RB.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
     }
 
