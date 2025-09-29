@@ -1,5 +1,5 @@
-using Interfaces;
 using UnityEngine;
+using Game.Interfaces;
 
 public class Player : MonoBehaviour, ILaunchable {
     private const float VELOCITY_AMPLIFIER = 4f;
