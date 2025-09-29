@@ -1,5 +1,5 @@
-using Interfaces;
 using UnityEngine;
+using Game.Interfaces;
 
 public class Director : MonoBehaviour {
     
