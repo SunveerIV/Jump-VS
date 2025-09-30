@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9156083734483161829}
   - component: {fileID: 7099788809629133970}
   - component: {fileID: 2511218217023067117}
+  - component: {fileID: 4094211490058345521}
   m_Layer: 5
   m_Name: FPSTEXT
   m_TagString: Untagged
@@ -136,3 +137,15 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4094211490058345521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6291883044260855659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f8384e2197532c4685098514aba8552, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

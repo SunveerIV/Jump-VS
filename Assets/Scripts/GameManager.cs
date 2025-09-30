@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Game.Settings;
 
 public class GameManager : MonoBehaviour {
 
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour {
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         audioSource.Stop();
+        audioSource.volume = UserSettings.MusicVolume;
         level = FindFirstObjectByType<Level>();
         
         switch (scene.name) {
