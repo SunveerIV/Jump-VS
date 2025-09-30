@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour {
     private const string GAME_SCENE_NAME = "Core Game";
+    private const string SINGLEPLAYER_END_SCREEN_NAME = "Singleplayer End Screen";
     
     private void Awake() {
         Application.targetFrameRate = 60;
@@ -10,6 +11,10 @@ public class SceneLoader : MonoBehaviour {
 
     public static void LoadGame() {
         SceneManager.LoadScene(GAME_SCENE_NAME);
+    }
+
+    public static void LoadSingleplayerEndScreen() {
+        SceneManager.LoadScene(SINGLEPLAYER_END_SCREEN_NAME);
     }
 
     public static void LoadStartMenu() {
