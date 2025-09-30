@@ -63,18 +63,19 @@ public class Player : MonoBehaviour, ILaunchable {
     private void OnCollisionEnter2D(Collision2D collision) {
         switch (collision.gameObject.tag) {
             case "Platform": {
-                if (transform.position.y > collision.transform.position.y && hasStuck == false) {
+                Platform platform = collision.gameObject.GetComponent<Platform>();
+                if (transform.position.y > platform.transform.position.y && hasStuck == false) {
                     audioSource.PlayOneShot(stickSound);
                     
-                    int platformIndex = collision.gameObject.GetComponent<Platform>().Index;
-                    UpdateScore(1.5f - Mathf.Abs(collision.transform.position.x - transform.position.x), platformIndex - previousPlatformIndex);
-                    previousPlatformIndex = platformIndex; ;
+                    int platformIndex = platform.Index;
+                    UpdateScore(1.5f - Mathf.Abs(platform.transform.position.x - transform.position.x), platformIndex - previousPlatformIndex);
+                    previousPlatformIndex = platformIndex;
                     cachedBorderBounces = 0;
                     
                     RB.linearVelocity = Vector2.zero;
-                    transform.position = new Vector2(collision.transform.position.x, collision.transform.position.y + 0.2f);
+                    transform.position = new Vector2(platform.transform.position.x, platform.transform.position.y + 0.2f);
                     hasStuck = true;
-                    transform.SetParent(collision.transform);
+                    transform.SetParent(platform.transform);
                 }
                 break;
             }
