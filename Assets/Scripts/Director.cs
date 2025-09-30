@@ -8,9 +8,13 @@ public class Director : MonoBehaviour {
 
     private Camera mainCamera;
     private ILaunchable launchable;
-
-    private void Start() {
-        mainCamera = Camera.main;
+    
+    public static Director Create(Director prefab, Vector3 position, Quaternion rotation, ILaunchable launchable) {
+        Director director = Instantiate(prefab, position, rotation);
+        director.launchable = launchable;
+        director.transform.SetParent(launchable.transform);
+        director.mainCamera = Camera.main;
+        return director;
     }
 
     private void Update() {
@@ -69,12 +73,5 @@ public class Director : MonoBehaviour {
             launchable.Launch(transform.position);
             Destroy(gameObject);
         }
-    }
-
-    public static Director Create(Director prefab, Vector3 position, Quaternion rotation, ILaunchable launchable) {
-        Director director = Instantiate(prefab, position, rotation);
-        director.launchable = launchable;
-        director.transform.SetParent(launchable.transform);
-        return director;
     }
 }

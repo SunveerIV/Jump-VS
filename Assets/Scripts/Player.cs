@@ -29,11 +29,14 @@ public class Player : MonoBehaviour, ILaunchable {
 
     public float Score => score;
     
-    private void Start() {
-        mainCamera = Camera.main;
-        minY = mainCamera.transform.position.y;
-        hasStuck = false;
-        audioSource.volume = UserSettings.SoundEffectsVolume;
+    public static Player Create(Player prefab, Vector3 position, Quaternion rotation, Level level) {
+        Player player = Instantiate(prefab, position, rotation);
+        player.level = level;
+        player.mainCamera = Camera.main;
+        player.minY = player.mainCamera.transform.position.y;
+        player.hasStuck = false;
+        player.audioSource.volume = UserSettings.SoundEffectsVolume;
+        return player;
     }
 
     private void Update() {
@@ -97,11 +100,5 @@ public class Player : MonoBehaviour, ILaunchable {
         hasStuck = false;
         transform.SetParent(null);
         RB.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
-    }
-
-    public static Player Create(Player prefab, Vector3 position, Quaternion rotation, Level level) {
-        Player player = Instantiate(prefab, position, rotation);
-        player.level = level;
-        return player;
     }
 }
