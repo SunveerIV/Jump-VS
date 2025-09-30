@@ -5,11 +5,16 @@ using Game.Settings;
 public class Player : MonoBehaviour, ILaunchable {
     private const float VELOCITY_AMPLIFIER = 4f;
     
+    [Header("Prefabs")]
     [SerializeField] private Director director;
+    
+    [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip stickSound;
     [SerializeField] private AudioClip bounceSound;
     [SerializeField] private AudioClip failSong;
+    
+    [Header("Components")]
     [SerializeField] private Rigidbody2D RB;
     
     private Level level;
