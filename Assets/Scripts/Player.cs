@@ -1,5 +1,6 @@
 using UnityEngine;
 using Game.Interfaces;
+using Game.Settings;
 
 public class Player : MonoBehaviour, ILaunchable {
     private const float VELOCITY_AMPLIFIER = 4f;
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour, ILaunchable {
         mainCamera = Camera.main;
         minY = mainCamera.transform.position.y;
         hasStuck = false;
+        audioSource.volume = UserSettings.SoundEffectsVolume;
     }
 
     private void Update() {

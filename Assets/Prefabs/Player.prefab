@@ -104,15 +104,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   director: {fileID: 7199711369142243909, guid: f9e6c7fa266b3485c933c0d83181e6be, type: 3}
-  Platform: {fileID: 485351226456686679, guid: 43e991d18e14840c8b648c5f8b14c895, type: 3}
-  RB: {fileID: 2804497900257099959}
-  highestPlatform: 0
-  minY: 0
   audioSource: {fileID: 8464730257694946865}
   stickSound: {fileID: 8300000, guid: 8652a670cec26c341aa12f5636b278e6, type: 3}
   bounceSound: {fileID: 8300000, guid: 4874713fadf66394e9332fff40daac4f, type: 3}
   failSong: {fileID: 8300000, guid: ef3f60df12a2896468b6dc3fc6f6a751, type: 3}
-  hasDirected: 0
+  RB: {fileID: 2804497900257099959}
 --- !u!50 &2804497900257099959
 Rigidbody2D:
   serializedVersion: 5
@@ -189,7 +185,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.503
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
