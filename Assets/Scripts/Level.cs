@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using TMPro;
 
 public class Level : MonoBehaviour {
@@ -86,6 +85,6 @@ public class Level : MonoBehaviour {
         if (players[0].Score > PlayerPrefs.GetFloat("High Score")) {
             PlayerPrefs.SetFloat("High Score", players[0].Score);
         }
-        SceneManager.LoadScene("Singleplayer End Screen");
+        SceneLoader.LoadSingleplayerEndScreen();
     }
 }
