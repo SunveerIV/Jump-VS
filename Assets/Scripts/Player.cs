@@ -67,7 +67,9 @@ public class Player : MonoBehaviour, ILaunchable {
         switch (collision.gameObject.tag) {
             case "Platform": {
                 Platform platform = collision.gameObject.GetComponent<Platform>();
-                if (transform.position.y > platform.transform.position.y && hasStuck == false) {
+                if (transform.position.y <= platform.transform.position.y) {
+                    cachedBorderBounces++;
+                } else if (!hasStuck) {
                     audioSource.PlayOneShot(stickSound);
                     
                     int platformIndex = platform.Index;
