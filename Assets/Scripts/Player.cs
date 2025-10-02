@@ -54,7 +54,7 @@ public class Player : MonoBehaviour, ILaunchable {
     
     private void InstantiateDirector() {
         if (isAttachedToPlatform && Input.GetMouseButtonDown(0)) {
-            Director.Create(transform.position, transform.rotation, this);
+            Director.Create(this);
         }
     }
     public void Launch(Vector3 directorPosition) {
