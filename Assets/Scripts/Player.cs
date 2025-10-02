@@ -1,12 +1,10 @@
 using UnityEngine;
 using Game.Interfaces;
 using Game.Settings;
+using Game.Utility.Prefab;
 
 public class Player : MonoBehaviour, ILaunchable {
     private const float VELOCITY_AMPLIFIER = 4f;
-    
-    [Header("Prefabs")]
-    [SerializeField] private Director director;
     
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -32,8 +30,8 @@ public class Player : MonoBehaviour, ILaunchable {
 
     public float Score => score;
     
-    public static Player Create(Player prefab, Vector3 position, Quaternion rotation, Level level) {
-        Player player = Instantiate(prefab, position, rotation);
+    public static Player Create(Vector3 position, Quaternion rotation, Level level) {
+        Player player = Instantiate(PrefabContainer.PLAYER, position, rotation);
         player.level = level;
         player.mainCamera = Camera.main;
         player.minYToRaiseCamera = player.mainCamera.transform.position.y;
@@ -56,7 +54,7 @@ public class Player : MonoBehaviour, ILaunchable {
     
     private void InstantiateDirector() {
         if (isAttachedToPlatform && Input.GetMouseButtonDown(0)) {
-            Director.Create(director, transform.position, transform.rotation, this);
+            Director.Create(transform.position, transform.rotation, this);
         }
     }
     public void Launch(Vector3 directorPosition) {

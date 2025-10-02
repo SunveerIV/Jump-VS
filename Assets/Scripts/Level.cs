@@ -4,8 +4,6 @@ using UnityEngine;
 using TMPro;
 
 public class Level : MonoBehaviour {
-    [SerializeField] private Platform platformGameObject;
-    [SerializeField] private Player playerGameObject;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI FPSText;
     [SerializeField] private TextMeshProUGUI highScoreText;
@@ -26,7 +24,7 @@ public class Level : MonoBehaviour {
         InstantiatePlatform();
         float playerStartPosX = platforms[0].transform.position.x;
         players = new List<Player>();
-        Player player = Player.Create(playerGameObject, new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
+        Player player = Player.Create(new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
         players.Add(player);
         StartCoroutine(UpdateEverySecond());
         highScoreText.text = "High Score: " + PlayerPrefs.GetFloat("High Score", 0);
@@ -72,7 +70,7 @@ public class Level : MonoBehaviour {
 
     private void InstantiatePlatform() {
         highestPlatform += 2f;
-        Platform platform = Platform.Create(platformGameObject, new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform), Quaternion.identity, platformIndex);
+        Platform platform = Platform.Create(new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform), Quaternion.identity, platformIndex);
         platformIndex++;
         platforms.Add(platform);
     }
