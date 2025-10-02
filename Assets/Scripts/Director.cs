@@ -4,17 +4,21 @@ using Game.Utility.Prefab;
 
 public class Director : MonoBehaviour {
     
+    private static readonly Quaternion START_ROTATION = new Quaternion(0,0,0, 1);
     private const float SCALE_SCALE = 5f;
     private const float MAX_DISTANCE = 3f;
 
     private Camera mainCamera;
     private ILaunchable launchable;
     
-    public static Director Create(Vector3 position, Quaternion rotation, ILaunchable launchable) {
-        Director director = Instantiate(PrefabContainer.DIRECTOR, position, rotation);
+    public static Director Create(ILaunchable launchable) {
+        Director director = Instantiate(PrefabContainer.DIRECTOR, Vector3.zero, START_ROTATION);
         director.launchable = launchable;
         director.transform.SetParent(launchable.transform);
         director.mainCamera = Camera.main;
+        director.Move();
+        director.Rotate();
+        director.Scale();
         return director;
     }
 
@@ -22,7 +26,7 @@ public class Director : MonoBehaviour {
         Move();
         Rotate();
         Scale();
-        CheckDelete();
+        Delete();
     }
 
     /// <summary>
@@ -65,11 +69,10 @@ public class Director : MonoBehaviour {
     }
 
     /// <summary>
-    /// If the player releases the mouse button or finger, the director gets destroyed.
-    /// Additionally, the player's parent is removed, and velocity is set to
-    /// the difference between the player's position and the director's position.
+    /// If the player releases MouseButton1 or stops touching the screen,
+    /// launchable is launched and Director is destroyed
     /// </summary>
-    private void CheckDelete() {
+    private void Delete() {
         if (Input.GetMouseButtonUp(0)) {
             launchable.Launch(transform.position);
             Destroy(gameObject);
