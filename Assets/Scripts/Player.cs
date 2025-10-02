@@ -17,15 +17,18 @@ public class Player : MonoBehaviour, ILaunchable {
     [Header("Components")]
     [SerializeField] private Rigidbody2D RB;
     
+    //Cached References
     private Level level;
     private Camera mainCamera;
     
-    private bool hasStuck;
-    private int previousPlatformIndex;
-    private int cachedBorderBounces;
-    private float minY;
+    //Scoring
     private float score;
-    private float lastScore;
+    private float previousScore;
+    private int previousPlatformIndex;
+    private int cachedBounces;
+    
+    private bool isAttachedToPlatform;
+    private float minYToRaiseCamera;
 
     public float Score => score;
     
@@ -33,32 +36,49 @@ public class Player : MonoBehaviour, ILaunchable {
         Player player = Instantiate(prefab, position, rotation);
         player.level = level;
         player.mainCamera = Camera.main;
-        player.minY = player.mainCamera.transform.position.y;
-        player.hasStuck = false;
+        player.minYToRaiseCamera = player.mainCamera.transform.position.y;
+        player.isAttachedToPlatform = false;
         player.audioSource.volume = UserSettings.SoundEffectsVolume;
         return player;
     }
 
     private void Update() {
-        if (hasStuck && Input.GetMouseButtonDown(0)) {
-            Director.Create(director, transform.position, transform.rotation, this);
-        }
-
-        if (transform.position.y >= minY) {
-            minY = transform.position.y;
+        RaiseCamera();
+        InstantiateDirector();
+    }
+    
+    private void RaiseCamera() {
+        if (transform.position.y >= minYToRaiseCamera) {
+            minYToRaiseCamera = transform.position.y;
             mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, transform.position.y, -1f);
         }
     }
+    
+    private void InstantiateDirector() {
+        if (isAttachedToPlatform && Input.GetMouseButtonDown(0)) {
+            Director.Create(director, transform.position, transform.rotation, this);
+        }
+    }
+    public void Launch(Vector3 directorPosition) {
+        isAttachedToPlatform = false;
+        transform.SetParent(null);
+        RB.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
+    }
 
-    private void UpdateScore(float xPosDifference, int platformDifferential) {
+    private void UpdateScoreFields(float newPlatformXPos, int newPlatformIndex) {
+        float xPosDifference = 1.5f - Mathf.Abs(newPlatformXPos - transform.position.x);
+        int platformDifferential = newPlatformIndex - previousPlatformIndex;
         
         if (platformDifferential > 0) {
-            lastScore = platformDifferential * Mathf.Pow(1.3f, cachedBorderBounces) * Mathf.Pow(xPosDifference, 12);
-            score += lastScore;
+            previousScore = platformDifferential * Mathf.Pow(1.3f, cachedBounces) * Mathf.Pow(xPosDifference, 12);
+            score += previousScore;
         } else if(platformDifferential < 0) {
-            score -= lastScore;
-            lastScore = 0;
+            score -= previousScore;
+            previousScore = 0;
         }
+        
+        cachedBounces = 0;
+        previousPlatformIndex = newPlatformIndex;
 
         level.UpdateScore();
     }
@@ -66,28 +86,25 @@ public class Player : MonoBehaviour, ILaunchable {
     private void OnCollisionEnter2D(Collision2D collision) {
         switch (collision.gameObject.tag) {
             case "Platform": {
-                Platform platform = collision.gameObject.GetComponent<Platform>();
-                if (transform.position.y <= platform.transform.position.y) {
-                    cachedBorderBounces++;
-                } else if (!hasStuck) {
+                Platform newPlatform = collision.gameObject.GetComponent<Platform>();
+                if (transform.position.y <= newPlatform.transform.position.y) {
+                    cachedBounces++;
+                } else if (!isAttachedToPlatform) {
                     audioSource.PlayOneShot(stickSound);
                     
-                    int platformIndex = platform.Index;
-                    UpdateScore(1.5f - Mathf.Abs(platform.transform.position.x - transform.position.x), platformIndex - previousPlatformIndex);
-                    previousPlatformIndex = platformIndex;
-                    cachedBorderBounces = 0;
+                    UpdateScoreFields(newPlatform.transform.position.x, newPlatform.Index);
                     
                     RB.linearVelocity = Vector2.zero;
-                    transform.position = new Vector2(platform.transform.position.x, platform.transform.position.y + 0.2f);
-                    hasStuck = true;
-                    transform.SetParent(platform.transform);
+                    transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
+                    isAttachedToPlatform = true;
+                    transform.SetParent(newPlatform.transform);
                 }
                 break;
             }
 
             case "Border": {
                 audioSource.PlayOneShot(bounceSound);
-                cachedBorderBounces++;
+                cachedBounces++;
                 break;
             }
 
@@ -96,11 +113,5 @@ public class Player : MonoBehaviour, ILaunchable {
                 break;
             }
         }
-    }
-
-    public void Launch(Vector3 directorPosition) {
-        hasStuck = false;
-        transform.SetParent(null);
-        RB.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
     }
 }
