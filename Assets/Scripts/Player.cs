@@ -4,7 +4,10 @@ using Game.Settings;
 using Game.Utility.Prefab;
 
 public class Player : MonoBehaviour, ILaunchable {
+    
     private const float VELOCITY_AMPLIFIER = 4f;
+    private const float BASE_POWER_FOR_BOUNCES = 1.3f;
+    private const float EXPONENT_FOR_PLATFORM_DIFFERENCE = 12f;
     
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -70,7 +73,9 @@ public class Player : MonoBehaviour, ILaunchable {
         int platformDifferential = newPlatformIndex - previousPlatformIndex;
         
         if (platformDifferential > 0) {
-            previousScore = platformDifferential * Mathf.Pow(1.3f, cachedBounces) * Mathf.Pow(xPosDifference, 12);
+            float bounceMultiplier = Mathf.Pow(BASE_POWER_FOR_BOUNCES, cachedBounces);
+            float positionDifferenceMultiplier = Mathf.Pow(xPosDifference, EXPONENT_FOR_PLATFORM_DIFFERENCE);
+            previousScore = platformDifferential * bounceMultiplier * positionDifferenceMultiplier;
             score += previousScore;
         } else if(platformDifferential < 0) {
             score -= previousScore;
