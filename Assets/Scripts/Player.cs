@@ -75,8 +75,9 @@ public class Player : MonoBehaviour, ILaunchable {
         transform.SetParent(newPlatform.transform);
     }
     
-    private void UpdateScoreFields(float newPlatformXPos, int newPlatformIndex) {
-        float xPosDifference = 1.5f - Mathf.Abs(newPlatformXPos - transform.position.x);
+    private void UpdateScoreFields(Platform newPlatform) {
+        int newPlatformIndex = newPlatform.Index;
+        float xPosDifference = 1.5f - Mathf.Abs(newPlatform.transform.position.x - transform.position.x);
         int platformDifferential = newPlatformIndex - previousPlatformIndex;
         
         if (platformDifferential > 0) {
@@ -103,7 +104,7 @@ public class Player : MonoBehaviour, ILaunchable {
                     cachedBounces++;
                 } else if (!isAttachedToPlatform) {
                     audioSource.PlayOneShot(stickSound);
-                    UpdateScoreFields(newPlatform.transform.position.x, newPlatform.Index);
+                    UpdateScoreFields(newPlatform);
                     StickToPlatform(newPlatform);
                 }
                 break;
