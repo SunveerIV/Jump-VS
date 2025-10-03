@@ -48,7 +48,9 @@ public class Player : MonoBehaviour, ILaunchable {
     private void RaiseCamera() {
         if (transform.position.y >= minYToRaiseCamera) {
             minYToRaiseCamera = transform.position.y;
-            mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, transform.position.y, -1f);
+            Vector3 currentCameraPos = mainCamera.transform.position;
+            currentCameraPos.y = transform.position.y;
+            mainCamera.transform.position = currentCameraPos;
         }
     }
     
