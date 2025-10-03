@@ -68,6 +68,13 @@ public class Player : MonoBehaviour, ILaunchable {
         RB.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
     }
 
+    private void StickToPlatform(Platform newPlatform) {
+        RB.linearVelocity = Vector2.zero;
+        transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
+        isAttachedToPlatform = true;
+        transform.SetParent(newPlatform.transform);
+    }
+    
     private void UpdateScoreFields(float newPlatformXPos, int newPlatformIndex) {
         float xPosDifference = 1.5f - Mathf.Abs(newPlatformXPos - transform.position.x);
         int platformDifferential = newPlatformIndex - previousPlatformIndex;
@@ -96,13 +103,8 @@ public class Player : MonoBehaviour, ILaunchable {
                     cachedBounces++;
                 } else if (!isAttachedToPlatform) {
                     audioSource.PlayOneShot(stickSound);
-                    
                     UpdateScoreFields(newPlatform.transform.position.x, newPlatform.Index);
-                    
-                    RB.linearVelocity = Vector2.zero;
-                    transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
-                    isAttachedToPlatform = true;
-                    transform.SetParent(newPlatform.transform);
+                    StickToPlatform(newPlatform);
                 }
                 break;
             }
