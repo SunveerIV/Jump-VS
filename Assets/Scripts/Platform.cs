@@ -19,15 +19,8 @@ public class Platform : MonoBehaviour, IStickable {
     private int index;
 
     public int Index => index;
-
-    public float ScoreMultiplier {
-        get {
-            if (isMovingPlatform) {
-                return Mathf.Pow(velocityAmplifier, SCORE_MULTIPLIER_EXPONENT);
-            }
-            return DEFAULT_SCORE_MULTIPLIER;
-        }
-    }
+    
+    public float ScoreMultiplier => isMovingPlatform ? Mathf.Pow(velocityAmplifier, SCORE_MULTIPLIER_EXPONENT) : DEFAULT_SCORE_MULTIPLIER;
 
     public static Platform Create(Vector3 position, Quaternion rotation, int index) {
         Platform platform = Instantiate(PrefabContainer.PLATFORM, position, rotation);
