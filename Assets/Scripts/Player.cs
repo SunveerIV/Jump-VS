@@ -21,6 +21,7 @@ public class Player : MonoBehaviour, ILaunchable {
     //Cached References
     private Level level;
     private Camera mainCamera;
+    private IStickable stuckPlatform;
     
     //Scoring
     private float score;
@@ -46,6 +47,7 @@ public class Player : MonoBehaviour, ILaunchable {
     private void Update() {
         RaiseCamera();
         InstantiateDirector();
+        RemainStuckToPlatform();
     }
     
     private void RaiseCamera() {
@@ -62,9 +64,18 @@ public class Player : MonoBehaviour, ILaunchable {
             Director.Create(this);
         }
     }
+
+    private void RemainStuckToPlatform() {
+        if (stuckPlatform != null) {
+            Vector3 playerPos = transform.position;
+            playerPos.x = stuckPlatform.transform.position.x;
+            transform.position = playerPos;
+        }
+    }
+    
     public void Launch(Vector3 directorPosition) {
         isAttachedToPlatform = false;
-        transform.SetParent(null);
+        stuckPlatform = null;
         RB.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
     }
 
@@ -72,6 +83,7 @@ public class Player : MonoBehaviour, ILaunchable {
         RB.linearVelocity = Vector2.zero;
         transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
         isAttachedToPlatform = true;
+        stuckPlatform = newPlatform;
     }
     
     private void UpdateScoreFields(Platform newPlatform) {
@@ -82,7 +94,7 @@ public class Player : MonoBehaviour, ILaunchable {
         if (platformDifferential > 0) {
             float bounceMultiplier = Mathf.Pow(BASE_POWER_FOR_BOUNCES, cachedBounces);
             float positionDifferenceMultiplier = Mathf.Pow(xPosDifference, EXPONENT_FOR_PLATFORM_DIFFERENCE);
-            previousScore = platformDifferential * bounceMultiplier * positionDifferenceMultiplier;
+            previousScore = newPlatform.ScoreMultiplier * platformDifferential * bounceMultiplier * positionDifferenceMultiplier;
             score += previousScore;
         } else if(platformDifferential < 0) {
             score -= previousScore;

@@ -1,31 +1,42 @@
-using System;
 using UnityEngine;
+using Game.Interfaces;
 using Game.Utility;
 using Game.Utility.Prefab;
 
-public class Platform : MonoBehaviour {
+public class Platform : MonoBehaviour, IStickable {
 
-    private const float PROBABILITY_OF_MOVING_PLATFORM = 0.5f;
-    private const float VELOCITY_AMPLIFIER = 2f;
+    private const float PROBABILITY_OF_MOVING_PLATFORM = 0.35f;
+    private const float DEFAULT_SCORE_MULTIPLIER = 1f;
+    private const float SCORE_MULTIPLIER_EXPONENT = 3f;
+    private const float MIN_VELOCITY_AMPLIFIER = 1f;
+    private const float MAX_VELOCITY_AMPLIFIER = 4f;
     
     [SerializeField] private Rigidbody2D RB;
 
+    private float velocityAmplifier;
     private bool isMovingPlatform;
     private int direction;
     private int index;
 
     public int Index => index;
 
+    public float ScoreMultiplier {
+        get {
+            if (isMovingPlatform) {
+                return Mathf.Pow(velocityAmplifier, SCORE_MULTIPLIER_EXPONENT);
+            }
+            return DEFAULT_SCORE_MULTIPLIER;
+        }
+    }
+
     public static Platform Create(Vector3 position, Quaternion rotation, int index) {
         Platform platform = Instantiate(PrefabContainer.PLATFORM, position, rotation);
         platform.index = index;
+        platform.velocityAmplifier = Random.Range(MIN_VELOCITY_AMPLIFIER, MAX_VELOCITY_AMPLIFIER);
         
         platform.isMovingPlatform = Statistics.Probability(PROBABILITY_OF_MOVING_PLATFORM);
         if (platform.isMovingPlatform) {
             platform.direction = Statistics.FiftyPercentChance ? 1 : -1;
-        }
-        else {
-            platform.direction = 0;
         }
         platform.Move();
         
@@ -33,10 +44,8 @@ public class Platform : MonoBehaviour {
     }
 
     private void Move() {
-        if (index == 0) return;
-        if (isMovingPlatform) {
-            RB.linearVelocityX = direction * VELOCITY_AMPLIFIER;
-        }
+        if (index == 0 || !isMovingPlatform) return;
+        RB.linearVelocityX = direction * velocityAmplifier;
     }
 
     private void OnCollisionEnter2D(Collision2D other) {
