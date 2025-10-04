@@ -72,7 +72,6 @@ public class Player : MonoBehaviour, ILaunchable {
         RB.linearVelocity = Vector2.zero;
         transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
         isAttachedToPlatform = true;
-        transform.SetParent(newPlatform.transform);
     }
     
     private void UpdateScoreFields(Platform newPlatform) {
