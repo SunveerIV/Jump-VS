@@ -8,5 +8,10 @@ namespace Game.Utility {
         /// <param name="probability">Probability from 0 to 1</param>
         /// <returns></returns>
         public static bool Probability(float probability) => Random.value < probability;
+
+        /// <summary>
+        /// Returns "true" 50% of the time
+        /// </summary>
+        public static bool FiftyPercentChance => Probability(0.5f);
     }
 }
