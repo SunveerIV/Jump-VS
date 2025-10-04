@@ -103,7 +103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e57c823c916db4009b5dcfb6197fdb58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  director: {fileID: 7199711369142243909, guid: f9e6c7fa266b3485c933c0d83181e6be, type: 3}
   audioSource: {fileID: 8464730257694946865}
   stickSound: {fileID: 8300000, guid: 8652a670cec26c341aa12f5636b278e6, type: 3}
   bounceSound: {fileID: 8300000, guid: 4874713fadf66394e9332fff40daac4f, type: 3}
