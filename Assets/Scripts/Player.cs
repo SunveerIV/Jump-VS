@@ -21,7 +21,7 @@ public class Player : MonoBehaviour, ILaunchable {
     //Cached References
     private Level level;
     private Camera mainCamera;
-    private IStickable stuckPlatform;
+    private IStickable stickable;
     
     //Scoring
     private float score;
@@ -66,16 +66,16 @@ public class Player : MonoBehaviour, ILaunchable {
     }
 
     private void RemainStuckToPlatform() {
-        if (stuckPlatform != null) {
+        if (stickable != null) {
             Vector3 playerPos = transform.position;
-            playerPos.x = stuckPlatform.transform.position.x;
+            playerPos.x = stickable.transform.position.x;
             transform.position = playerPos;
         }
     }
     
     public void Launch(Vector3 directorPosition) {
         isAttachedToPlatform = false;
-        stuckPlatform = null;
+        stickable = null;
         RB.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
     }
 
@@ -83,7 +83,7 @@ public class Player : MonoBehaviour, ILaunchable {
         RB.linearVelocity = Vector2.zero;
         transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
         isAttachedToPlatform = true;
-        stuckPlatform = newPlatform;
+        stickable = newPlatform;
     }
     
     private void UpdateScoreFields(Platform newPlatform) {
