@@ -86,3 +86,7 @@ crashlytics-build.properties
 
 # My Settings
 /.idea
+
+# Optional Packages
+/[Aa]ssets/ParrelSync
+/[Aa]ssets/ParrelSync.meta
