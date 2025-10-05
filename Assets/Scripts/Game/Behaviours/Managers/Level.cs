@@ -14,7 +14,7 @@ namespace Game.Behaviours.Managers {
         private const float MAX_DIFFERENCE = 6f;
         private const float PLAYER_START_Y = 1.6f;
 
-        private List<Player> players;
+        private List<PlayerBase> players;
         private List<Platform> platforms;
 
         private float highestPlatform;
@@ -26,8 +26,8 @@ namespace Game.Behaviours.Managers {
             highestPlatform = -1f;
             InstantiatePlatform();
             float playerStartPosX = platforms[0].transform.position.x;
-            players = new List<Player>();
-            Player player = Player.Create(new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
+            players = new List<PlayerBase>();
+            PlayerBase player = PlayerSingleplayer.Create(new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
             players.Add(player);
             StartCoroutine(UpdateEverySecond());
             highScoreText.text = "High Score: " + PlayerPrefs.GetFloat("High Score", 0);
@@ -48,7 +48,7 @@ namespace Game.Behaviours.Managers {
         private void UpdatePlatforms() {
             float highestCircle = float.MinValue;
             float lowestCircle = float.MaxValue;
-            foreach (Player player in players) {
+            foreach (PlayerBase player in players) {
                 if (player.transform.position.y > highestCircle) {
                     highestCircle = player.transform.position.y;
                 }
