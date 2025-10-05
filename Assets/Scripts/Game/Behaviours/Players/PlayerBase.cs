@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Netcode;
 using Game.Prefabs;
 using Game.Settings;
 using Game.Interfaces;
@@ -7,20 +8,19 @@ using Game.Behaviours.Platforms;
 using Game.Behaviours.Directors;
 
 namespace Game.Behaviours.Players {
-    public class Player : MonoBehaviour, ILaunchable {
+    public abstract class PlayerBase : NetworkBehaviour, ILaunchable {
 
         private const float VELOCITY_AMPLIFIER = 4f;
         private const float BASE_POWER_FOR_BOUNCES = 1.3f;
         private const float EXPONENT_FOR_PLATFORM_DIFFERENCE = 12f;
 
         [Header("Audio")] 
-        [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip stickSound;
         [SerializeField] private AudioClip bounceSound;
-        [SerializeField] private AudioClip failSong;
 
         [Header("Components")] 
-        [SerializeField] private Rigidbody2D RB;
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private Rigidbody2D rb;
 
         //Cached References
         private Level level;
@@ -38,14 +38,12 @@ namespace Game.Behaviours.Players {
 
         public float Score => score;
 
-        public static Player Create(Vector3 position, Quaternion rotation, Level level) {
-            Player player = Instantiate(PrefabContainer.PLAYER, position, rotation);
-            player.level = level;
-            player.mainCamera = Camera.main;
-            player.minYToRaiseCamera = player.mainCamera.transform.position.y;
-            player.isAttachedToPlatform = false;
-            player.audioSource.volume = UserSettings.SoundEffectsVolume;
-            return player;
+        protected void Initialize(Level level) {
+            this.level = level;
+            mainCamera = Camera.main;
+            minYToRaiseCamera = mainCamera.transform.position.y;
+            isAttachedToPlatform = false;
+            audioSource.volume = UserSettings.SoundEffectsVolume;
         }
 
         private void Update() {
@@ -80,11 +78,11 @@ namespace Game.Behaviours.Players {
         public void Launch(Vector3 directorPosition) {
             isAttachedToPlatform = false;
             stickable = null;
-            RB.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
+            rb.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
         }
 
         private void StickToPlatform(Platform newPlatform) {
-            RB.linearVelocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
             isAttachedToPlatform = true;
             stickable = newPlatform;
