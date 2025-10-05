@@ -1,7 +1,7 @@
 using UnityEngine;
-using Game.Interfaces;
 using Game.Utility;
-using Game.Utility.Prefab;
+using Game.Prefabs;
+using Game.Interfaces;
 
 public class Platform : MonoBehaviour, IStickable {
 
