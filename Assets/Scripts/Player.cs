@@ -1,7 +1,7 @@
 using UnityEngine;
-using Game.Interfaces;
+using Game.Prefabs;
 using Game.Settings;
-using Game.Utility.Prefab;
+using Game.Interfaces;
 
 public class Player : MonoBehaviour, ILaunchable {
     

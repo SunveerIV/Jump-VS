@@ -1,6 +1,6 @@
 using UnityEngine;
+using Game.Prefabs;
 using Game.Interfaces;
-using Game.Utility.Prefab;
 
 public class Director : MonoBehaviour {
     
