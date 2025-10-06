@@ -1,9 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
-using Game.Prefabs;
 using Game.Settings;
 using Game.Interfaces;
-using Game.Behaviours.Managers;
 using Game.Behaviours.Platforms;
 using Game.Behaviours.Directors;
 
@@ -13,6 +11,9 @@ namespace Game.Behaviours.Players {
         private const float VELOCITY_AMPLIFIER = 4f;
         private const float BASE_POWER_FOR_BOUNCES = 1.3f;
         private const float EXPONENT_FOR_PLATFORM_DIFFERENCE = 12f;
+
+        [Header("Prefabs")] 
+        [SerializeField] private Director directorPrefab;
 
         [Header("Audio")] 
         [SerializeField] private AudioClip stickSound;
@@ -63,7 +64,7 @@ namespace Game.Behaviours.Players {
 
         private void InstantiateDirector() {
             if (isAttachedToPlatform && Input.GetMouseButtonDown(0)) {
-                Director.Create(this);
+                Director.Create(directorPrefab, this);
             }
         }
 
