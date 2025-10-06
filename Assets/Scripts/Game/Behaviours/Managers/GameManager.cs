@@ -38,7 +38,6 @@ namespace Game.Behaviours.Managers {
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
             Application.targetFrameRate = 60;
             audioSource.Stop();
-            audioSource.volume = UserSettings.MusicVolume;
             level = FindFirstObjectByType<LevelSingleplayer>();
 
             switch (scene.name) {

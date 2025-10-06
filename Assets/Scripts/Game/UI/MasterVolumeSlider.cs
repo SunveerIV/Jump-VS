@@ -7,9 +7,10 @@ namespace Game.UI {
 
         [SerializeField] private Slider slider;
 
-        private void Start() {
+        private void Awake() {
             slider.onValueChanged.AddListener(OnSliderValueChanged);
             slider.value = UserSettings.MasterVolume;
+            AudioListener.volume = UserSettings.MusicVolume;
         }
 
         private void OnSliderValueChanged(float value) {
