@@ -10,12 +10,12 @@ namespace Game.UI {
         
         [SerializeField] private TextMeshProUGUI textFPS;
 
-        private void Start() {
-            
-            if (UserSettings.ShowFPS) {
-                gameObject.SetActive(true);
-                StartCoroutine(ShowFPS());
+        private void Awake() {
+            if (!UserSettings.ShowFPS) {
+                gameObject.SetActive(false);
+                return;
             }
+            StartCoroutine(ShowFPS());
         }
 
         private IEnumerator ShowFPS() {

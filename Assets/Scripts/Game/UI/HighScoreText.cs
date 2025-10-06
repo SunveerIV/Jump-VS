@@ -8,9 +8,11 @@ namespace Game.UI {
         [SerializeField] private TextMeshProUGUI highScoreText;
 
         private void Start() {
-            if (UserSettings.ShowHighScore) {
-                highScoreText.text = "High Score: " + PlayerPrefs.GetFloat("High Score", 0);
+            if (!UserSettings.ShowHighScore) {
+                gameObject.SetActive(false);
+                return;
             }
+            highScoreText.text = "High Score: " + PlayerPrefs.GetFloat("High Score", 0);
         }
     }
 }
