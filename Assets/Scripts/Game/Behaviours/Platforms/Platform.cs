@@ -1,10 +1,11 @@
 using UnityEngine;
+using Unity.Netcode;
 using Game.Utility;
 using Game.Prefabs;
 using Game.Interfaces;
 
 namespace Game.Behaviours.Platforms {
-    public class Platform : MonoBehaviour, IStickable {
+    public abstract class PlatformBase : NetworkBehaviour, IStickable {
 
         private const float PROBABILITY_OF_MOVING_PLATFORM = 0.35f;
         private const float DEFAULT_SCORE_MULTIPLIER = 1f;
@@ -25,19 +26,16 @@ namespace Game.Behaviours.Platforms {
             ? Mathf.Pow(velocityAmplifier, SCORE_MULTIPLIER_EXPONENT)
             : DEFAULT_SCORE_MULTIPLIER;
 
-        public static Platform Create(Vector3 position, Quaternion rotation, int index) {
-            Platform platform = Instantiate(PrefabContainer.PLATFORM, position, rotation);
-            platform.index = index;
-            platform.velocityAmplifier = Random.Range(MIN_VELOCITY_AMPLIFIER, MAX_VELOCITY_AMPLIFIER);
+        protected void Initialize(int index) {
+            this.index = index;
+            velocityAmplifier = Random.Range(MIN_VELOCITY_AMPLIFIER, MAX_VELOCITY_AMPLIFIER);
 
-            platform.isMovingPlatform = Statistics.Probability(PROBABILITY_OF_MOVING_PLATFORM);
-            if (platform.isMovingPlatform) {
-                platform.direction = Statistics.FiftyPercentChance ? 1 : -1;
+            isMovingPlatform = Statistics.Probability(PROBABILITY_OF_MOVING_PLATFORM);
+            if (isMovingPlatform) {
+                direction = Statistics.FiftyPercentChance ? 1 : -1;
             }
 
-            platform.Move();
-
-            return platform;
+            Move();
         }
 
         private void Move() {
