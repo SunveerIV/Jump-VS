@@ -81,14 +81,14 @@ namespace Game.Behaviours.Players {
             rb.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
         }
 
-        private void StickToPlatform(Platform newPlatform) {
+        private void StickToPlatform(PlatformBase newPlatform) {
             rb.linearVelocity = Vector2.zero;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
             isAttachedToPlatform = true;
             stickable = newPlatform;
         }
 
-        private void UpdateScoreFields(Platform newPlatform) {
+        private void UpdateScoreFields(PlatformBase newPlatform) {
             int newPlatformIndex = newPlatform.Index;
             float xPosDifference = 1.5f - Mathf.Abs(newPlatform.transform.position.x - transform.position.x);
             int platformDifferential = newPlatformIndex - previousPlatformIndex;
@@ -114,7 +114,7 @@ namespace Game.Behaviours.Players {
         private void OnCollisionEnter2D(Collision2D collision) {
             switch (collision.gameObject.tag) {
                 case "Platform": {
-                    Platform newPlatform = collision.gameObject.GetComponent<Platform>();
+                    PlatformBase newPlatform = collision.gameObject.GetComponent<PlatformBase>();
                     if (transform.position.y <= newPlatform.transform.position.y) {
                         cachedBounces++;
                     }
