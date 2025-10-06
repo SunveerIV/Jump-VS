@@ -31,6 +31,7 @@ namespace Game.Behaviours.Managers {
             switch (scene.name) {
                 case "Core Game": {
                     PlaySong(gameMusic);
+                    LevelSingleplayer.Create();
                     break;
                 }
 
