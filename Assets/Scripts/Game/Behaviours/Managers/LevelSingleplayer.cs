@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Game.Prefabs;
+using Game.Interfaces;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
-using Game.Prefabs;
 
 namespace Game.Behaviours.Managers {
-    public class LevelSingleplayer : MonoBehaviour {
+    public class LevelSingleplayer : MonoBehaviour, ILevel {
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI FPSText;
         [SerializeField] private TextMeshProUGUI highScoreText;
