@@ -5,13 +5,20 @@ using Game.Settings;
 namespace Game.Behaviours.Managers {
     public class GameManager : MonoBehaviour {
 
+        public static GameManager Singleton { get; private set; }
+
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip gameMusic;
         [SerializeField] private AudioClip failSong;
 
-        public LevelSingleplayer level;
+        private LevelSingleplayer level;
 
-        private void Start() {
+        private void Awake() {
+            if (Singleton != null) {
+                Destroy(gameObject);
+                return;
+            }
+            Singleton = this;
             DontDestroyOnLoad(gameObject);
         }
 
