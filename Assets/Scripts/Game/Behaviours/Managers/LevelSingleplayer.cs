@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using Game.UI;
+using Game.Prefabs;
+using Game.Interfaces;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
 
 namespace Game.Behaviours.Managers {
-    public class Level : MonoBehaviour {
-        [SerializeField] private TextMeshProUGUI scoreText;
-        [SerializeField] private TextMeshProUGUI FPSText;
-        [SerializeField] private TextMeshProUGUI highScoreText;
+    public class LevelSingleplayer : MonoBehaviour, ILevel {
 
         private const float MAX_DIFFERENCE = 6f;
         private const float PLAYER_START_Y = 1.6f;
 
+        private SingleplayerCanvas gui;
+        
         private List<PlayerBase> players;
         private List<Platform> platforms;
 
@@ -21,28 +22,25 @@ namespace Game.Behaviours.Managers {
 
         private int platformIndex = 0;
 
-        private void Start() {
-            platforms = new List<Platform>();
-            highestPlatform = -1f;
-            InstantiatePlatform();
-            float playerStartPosX = platforms[0].transform.position.x;
-            players = new List<PlayerBase>();
-            PlayerBase player = PlayerSingleplayer.Create(new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
-            players.Add(player);
-            StartCoroutine(UpdateEverySecond());
-            highScoreText.text = "High Score: " + PlayerPrefs.GetFloat("High Score", 0);
+        public static LevelSingleplayer Create() {
+            LevelSingleplayer level = Instantiate(PrefabContainer.LEVEL_SINGLEPLAYER);
+            level.gui = SingleplayerCanvas.Create();
+            level.platforms = new List<Platform>();
+            level.highestPlatform = -1f;
+            level.InstantiatePlatform();
+            float playerStartPosX = level.platforms[0].transform.position.x;
+            level.players = new List<PlayerBase>();
+            PlayerBase player = PlayerSingleplayer.Create(new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, level);
+            level.players.Add(player);
+            level.StartCoroutine(level.UpdateEverySecond());
+            return level;
         }
 
         private IEnumerator UpdateEverySecond() {
             while (true) {
-                UpdateFPS();
                 UpdatePlatforms();
                 yield return new WaitForSeconds(1);
             }
-        }
-
-        private void UpdateFPS() {
-            FPSText.text = Mathf.Round(1 / Time.deltaTime).ToString();
         }
 
         private void UpdatePlatforms() {
@@ -80,7 +78,7 @@ namespace Game.Behaviours.Managers {
         }
 
         public void UpdateScore() {
-            scoreText.text = players[0].Score.ToString();
+            gui.ScoreText = players[0].Score;
         }
 
         public void EndGame() {

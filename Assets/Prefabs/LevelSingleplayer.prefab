@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2747360477090231668}
   - component: {fileID: 2747360477090231669}
   m_Layer: 0
-  m_Name: Level
+  m_Name: LevelSingleplayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 2747360477090231666}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.8175064, y: -0.12721692, z: -0.09717433}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44,10 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a559c2f28068c4decbd89e79cac67a94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformGameObject: {fileID: -6840045358517189539, guid: 43e991d18e14840c8b648c5f8b14c895, type: 3}
-  playerGameObject: {fileID: 4509458172391385669, guid: 30944b292ad7e4d2195c9dae87499d5f, type: 3}
-  scoreText: {fileID: 4967080562395045210, guid: 5ec644eaa34b24a38b5c29096b5cea3b, type: 3}
-  FPSText: {fileID: 2511218217023067117, guid: 34bdae6a84e8b4012b78364f1094fd76, type: 3}
-  highScoreText: {fileID: 0}
-  CachedScore: 0
-  CachedBounces: 0
+  levelSingleplayerPrefab: {fileID: 2747360477090231669}
