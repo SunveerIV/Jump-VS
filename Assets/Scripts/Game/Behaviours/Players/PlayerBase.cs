@@ -23,7 +23,7 @@ namespace Game.Behaviours.Players {
         [SerializeField] private Rigidbody2D rb;
 
         //Cached References
-        private Level level;
+        private LevelSingleplayer level;
         private Camera mainCamera;
         private IStickable stickable;
 
@@ -38,7 +38,7 @@ namespace Game.Behaviours.Players {
 
         public float Score => score;
 
-        protected void Initialize(Level level) {
+        protected void Initialize(LevelSingleplayer level) {
             this.level = level;
             mainCamera = Camera.main;
             minYToRaiseCamera = mainCamera.transform.position.y;

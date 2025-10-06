@@ -6,7 +6,7 @@ using Game.Behaviours.Managers;
 
 namespace Game.Behaviours.Players {
     public class PlayerSingleplayer : PlayerBase {
-        public static PlayerSingleplayer Create(Vector3 position, Quaternion rotation, Level level) {
+        public static PlayerSingleplayer Create(Vector3 position, Quaternion rotation, LevelSingleplayer level) {
             PlayerSingleplayer playerSingleplayer = Instantiate(PrefabContainer.PLAYER_SINGLEPLAYER, position, rotation);
             playerSingleplayer.Initialize(level);
             return playerSingleplayer;
