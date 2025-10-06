@@ -7,6 +7,10 @@ namespace Game.Behaviours.Managers {
 
         public static GameManager Singleton { get; private set; }
 
+        [Header("Prefabs")]
+        [SerializeField] private LevelSingleplayer levelSingleplayerPrefab;
+        
+        [Header("Audio")]
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip gameMusic;
         [SerializeField] private AudioClip failSong;
@@ -40,7 +44,7 @@ namespace Game.Behaviours.Managers {
             switch (scene.name) {
                 case "Core Game": {
                     PlaySong(gameMusic);
-                    LevelSingleplayer.Create();
+                    LevelSingleplayer.Create(levelSingleplayerPrefab);
                     break;
                 }
 
