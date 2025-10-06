@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using Game.UI;
 using Game.Prefabs;
 using Game.Interfaces;
 using Game.Behaviours.Players;
@@ -9,13 +9,12 @@ using Game.Behaviours.Platforms;
 
 namespace Game.Behaviours.Managers {
     public class LevelSingleplayer : MonoBehaviour, ILevel {
-        [SerializeField] private TextMeshProUGUI scoreText;
-        [SerializeField] private TextMeshProUGUI FPSText;
-        [SerializeField] private TextMeshProUGUI highScoreText;
 
         private const float MAX_DIFFERENCE = 6f;
         private const float PLAYER_START_Y = 1.6f;
 
+        private SingleplayerCanvas gui;
+        
         private List<PlayerBase> players;
         private List<Platform> platforms;
 
@@ -25,6 +24,7 @@ namespace Game.Behaviours.Managers {
 
         public static LevelSingleplayer Create() {
             LevelSingleplayer level = Instantiate(PrefabContainer.LEVEL_SINGLEPLAYER);
+            level.gui = SingleplayerCanvas.Create();
             level.platforms = new List<Platform>();
             level.highestPlatform = -1f;
             level.InstantiatePlatform();
@@ -33,20 +33,14 @@ namespace Game.Behaviours.Managers {
             PlayerBase player = PlayerSingleplayer.Create(new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, level);
             level.players.Add(player);
             level.StartCoroutine(level.UpdateEverySecond());
-            level.highScoreText.text = "High Score: " + PlayerPrefs.GetFloat("High Score", 0);
             return level;
         }
 
         private IEnumerator UpdateEverySecond() {
             while (true) {
-                UpdateFPS();
                 UpdatePlatforms();
                 yield return new WaitForSeconds(1);
             }
-        }
-
-        private void UpdateFPS() {
-            FPSText.text = Mathf.Round(1 / Time.deltaTime).ToString();
         }
 
         private void UpdatePlatforms() {
@@ -84,7 +78,7 @@ namespace Game.Behaviours.Managers {
         }
 
         public void UpdateScore() {
-            scoreText.text = players[0].Score.ToString();
+            gui.ScoreText = players[0].Score;
         }
 
         public void EndGame() {
