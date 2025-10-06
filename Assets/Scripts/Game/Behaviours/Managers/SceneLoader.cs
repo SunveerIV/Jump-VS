@@ -6,10 +6,6 @@ namespace Game.Behaviours.Managers {
         private const string GAME_SCENE_NAME = "Core Game";
         private const string SINGLEPLAYER_END_SCREEN_NAME = "Singleplayer End Screen";
 
-        private void Awake() {
-            Application.targetFrameRate = 60;
-        }
-
         public static void LoadGame() {
             SceneManager.LoadScene(GAME_SCENE_NAME);
         }
