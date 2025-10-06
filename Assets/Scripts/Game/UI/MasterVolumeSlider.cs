@@ -14,7 +14,7 @@ namespace Game.UI {
 
         private void OnSliderValueChanged(float value) {
             UserSettings.MasterVolume = value;
-            AudioListener.volume = UserSettings.MasterVolume; //After validation from the UserSettings class
+            AudioListener.volume = UserSettings.MasterVolume;
         }
 
         private void OnDestroy() {
