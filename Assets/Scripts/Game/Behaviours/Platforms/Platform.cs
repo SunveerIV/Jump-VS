@@ -1,7 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
 using Game.Utility;
-using Game.Prefabs;
 using Game.Interfaces;
 
 namespace Game.Behaviours.Platforms {
