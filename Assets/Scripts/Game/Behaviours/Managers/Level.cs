@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
+using Game.Prefabs;
 
 namespace Game.Behaviours.Managers {
     public class Level : MonoBehaviour {
@@ -21,16 +22,18 @@ namespace Game.Behaviours.Managers {
 
         private int platformIndex = 0;
 
-        private void Start() {
-            platforms = new List<Platform>();
-            highestPlatform = -1f;
-            InstantiatePlatform();
-            float playerStartPosX = platforms[0].transform.position.x;
-            players = new List<PlayerBase>();
-            PlayerBase player = PlayerSingleplayer.Create(new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
-            players.Add(player);
-            StartCoroutine(UpdateEverySecond());
-            highScoreText.text = "High Score: " + PlayerPrefs.GetFloat("High Score", 0);
+        public static Level Create() {
+            Level level = Instantiate(PrefabContainer.LEVEL);
+            level.platforms = new List<Platform>();
+            level.highestPlatform = -1f;
+            level.InstantiatePlatform();
+            float playerStartPosX = level.platforms[0].transform.position.x;
+            level.players = new List<PlayerBase>();
+            PlayerBase player = PlayerSingleplayer.Create(new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, level);
+            level.players.Add(player);
+            level.StartCoroutine(level.UpdateEverySecond());
+            level.highScoreText.text = "High Score: " + PlayerPrefs.GetFloat("High Score", 0);
+            return level;
         }
 
         private IEnumerator UpdateEverySecond() {
