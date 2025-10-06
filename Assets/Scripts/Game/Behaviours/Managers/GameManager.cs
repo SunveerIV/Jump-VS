@@ -20,6 +20,7 @@ namespace Game.Behaviours.Managers {
             }
             Singleton = this;
             DontDestroyOnLoad(gameObject);
+            AudioListener.volume = UserSettings.MasterVolume;
         }
 
         private void OnEnable() {
