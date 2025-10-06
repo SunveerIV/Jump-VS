@@ -7,7 +7,7 @@ using Game.Behaviours.Platforms;
 using Game.Prefabs;
 
 namespace Game.Behaviours.Managers {
-    public class Level : MonoBehaviour {
+    public class LevelSingleplayer : MonoBehaviour {
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI FPSText;
         [SerializeField] private TextMeshProUGUI highScoreText;
@@ -22,8 +22,8 @@ namespace Game.Behaviours.Managers {
 
         private int platformIndex = 0;
 
-        public static Level Create() {
-            Level level = Instantiate(PrefabContainer.LEVEL);
+        public static LevelSingleplayer Create() {
+            LevelSingleplayer level = Instantiate(PrefabContainer.LEVEL_SINGLEPLAYER);
             level.platforms = new List<Platform>();
             level.highestPlatform = -1f;
             level.InstantiatePlatform();

@@ -9,7 +9,7 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private AudioClip gameMusic;
         [SerializeField] private AudioClip failSong;
 
-        public Level level;
+        public LevelSingleplayer level;
 
         private void Start() {
             DontDestroyOnLoad(gameObject);
@@ -26,7 +26,7 @@ namespace Game.Behaviours.Managers {
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
             audioSource.Stop();
             audioSource.volume = UserSettings.MusicVolume;
-            level = FindFirstObjectByType<Level>();
+            level = FindFirstObjectByType<LevelSingleplayer>();
 
             switch (scene.name) {
                 case "Core Game": {
