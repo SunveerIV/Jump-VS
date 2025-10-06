@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   directorPrefab: {fileID: 7199711369142243909, guid: f9e6c7fa266b3485c933c0d83181e6be, type: 3}
+  level: {fileID: 2747360477090231669, guid: e37f2136b0c1d412784d54a5760bb09a, type: 3}
   platformPrefab: {fileID: -6840045358517189539, guid: 43e991d18e14840c8b648c5f8b14c895, type: 3}
   playerSingleplayerPrefab: {fileID: 2724401667519461711, guid: 30944b292ad7e4d2195c9dae87499d5f, type: 3}
   playerMultiplayerPrefab: {fileID: 2135628697679898862, guid: eaee16bbf635bd04b920c80b91b9e371, type: 3}
+  singleplayerCanvasPrefab: {fileID: -4827545123000088766, guid: 220212de1e3ad5b41837715042ec6880, type: 3}
