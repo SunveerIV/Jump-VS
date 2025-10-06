@@ -2,16 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Game.UI;
-using Game.Prefabs;
 using Game.Interfaces;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
+using UnityEditor;
 
 namespace Game.Behaviours.Managers {
     public class LevelSingleplayer : MonoBehaviour, ILevel {
 
         private const float MAX_DIFFERENCE = 6f;
         private const float PLAYER_START_Y = 1.6f;
+
+        [SerializeField] private PlatformSingleplayer platformSingleplayerPrefab;
+        [SerializeField] private PlayerSingleplayer playerSingleplayerPrefab;
+        [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
 
         private SingleplayerCanvas gui;
         
@@ -22,18 +26,21 @@ namespace Game.Behaviours.Managers {
 
         private int platformIndex = 0;
 
-        public static LevelSingleplayer Create() {
-            LevelSingleplayer level = Instantiate(PrefabContainer.LEVEL_SINGLEPLAYER);
-            level.gui = SingleplayerCanvas.Create();
-            level.platforms = new List<PlatformBase>();
-            level.highestPlatform = -1f;
-            level.InstantiatePlatform();
-            float playerStartPosX = level.platforms[0].transform.position.x;
-            level.players = new List<PlayerBase>();
-            PlayerBase player = PlayerSingleplayer.Create(new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, level);
-            level.players.Add(player);
-            level.StartCoroutine(level.UpdateEverySecond());
+        public static LevelSingleplayer Create(LevelSingleplayer prefab) {
+            LevelSingleplayer level = Instantiate(prefab);
             return level;
+        }
+
+        private void Start() {
+            gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
+            platforms = new List<PlatformBase>();
+            highestPlatform = -1f;
+            InstantiatePlatform();
+            float playerStartPosX = platforms[0].transform.position.x;
+            players = new List<PlayerBase>();
+            PlayerSingleplayer player = PlayerSingleplayer.Create(playerSingleplayerPrefab, new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
+            players.Add(player);
+            StartCoroutine(UpdateEverySecond());
         }
 
         private IEnumerator UpdateEverySecond() {
@@ -71,7 +78,7 @@ namespace Game.Behaviours.Managers {
 
         private void InstantiatePlatform() {
             highestPlatform += 2f;
-            PlatformBase platform = PlatformSingleplayer.Create(new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform),
+            PlatformBase platform = PlatformSingleplayer.Create(platformSingleplayerPrefab, new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform),
                 Quaternion.identity, platformIndex);
             platformIndex++;
             platforms.Add(platform);

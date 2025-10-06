@@ -1,5 +1,4 @@
 using UnityEngine;
-using Game.Prefabs;
 using Game.Interfaces;
 
 namespace Game.Behaviours.Directors {
@@ -12,8 +11,8 @@ namespace Game.Behaviours.Directors {
         private Camera mainCamera;
         private ILaunchable launchable;
 
-        public static Director Create(ILaunchable launchable) {
-            Director director = Instantiate(PrefabContainer.DIRECTOR, Vector3.zero, START_ROTATION);
+        public static Director Create(Director prefab, ILaunchable launchable) {
+            Director director = Instantiate(prefab, Vector3.zero, START_ROTATION);
             director.launchable = launchable;
             director.transform.SetParent(launchable.transform);
             director.mainCamera = Camera.main;
