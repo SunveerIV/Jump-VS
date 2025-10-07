@@ -48,7 +48,6 @@ namespace Game.Behaviours.Managers {
         }
         
         private void UpdatePlatforms() {
-            Debug.Log("Platforms updated");
             float highestCircle = float.MinValue;
             float lowestCircle = float.MaxValue;
             foreach (PlayerMultiplayer player in players) {
@@ -68,7 +67,7 @@ namespace Game.Behaviours.Managers {
             for (int i = platforms.Count - 1; i >= 0; i--) {
                 PlatformBase platform = platforms[i];
                 if (lowestCircle - platform.transform.position.y > MAX_DIFFERENCE) {
-                    Destroy(platform.gameObject);
+                    platform.gameObject.GetComponent<NetworkObject>().Despawn();
                     platforms.RemoveAt(i);
                 }
             }
@@ -95,7 +94,20 @@ namespace Game.Behaviours.Managers {
         }
 
         public void EndGame() {
+            Debug.Log("Num Players: " + players.Count);
+            int activePlayers = 0;
+            foreach (var player in players) {
+                activePlayers += player.hasLost.Value ? 0 : 1;
+            }
+            Debug.Log("Num active Players: " + activePlayers);
             
+            if (activePlayers > 0) return;
+            
+            Debug.Log("Server attempting to end game");
+            foreach (var player in players) {
+                player.EndGameClientRpc();
+            }
+            SceneLoader.LoadSingleplayerEndScreen();
         }
     }
 }

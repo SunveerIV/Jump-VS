@@ -23,6 +23,9 @@ namespace Game.Behaviours.Players {
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private Rigidbody2D rb;
         
+        //Network Variables
+        public readonly NetworkVariable<bool> hasLost = new(false);
+        
         //Cached References
         private IStickable stickable;
         
@@ -103,6 +106,26 @@ namespace Game.Behaviours.Players {
                     StickToPlatform(newPlatform);
                 }
             }
+
+            if (collision.gameObject.CompareTag("BottomCollider")) {
+                Debug.Log("Client Requesting Despawn");
+                RequestDespawnServerRpc();
+            }
+        }
+        
+        [ServerRpc]
+        private void RequestDespawnServerRpc() {
+            Debug.Log("Server Requesting Despawn");
+            hasLost.Value = true;
+            GetComponent<Rigidbody2D>().simulated = false;
+            FindFirstObjectByType<TwoPlayerLevel>().EndGame();
+        }
+
+        [ClientRpc]
+        public void EndGameClientRpc() {
+            Debug.Log("Client attempting to end game");
+            SceneLoader.LoadSingleplayerEndScreen();
         }
     }
+    
 }
