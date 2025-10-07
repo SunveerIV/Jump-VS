@@ -12,6 +12,7 @@ namespace Game.Behaviours.Directors {
         private ILaunchable launchable;
 
         public static Director Create(Director prefab, ILaunchable launchable) {
+            Debug.Log("Director Created");
             Director director = Instantiate(prefab, Vector3.zero, START_ROTATION);
             director.launchable = launchable;
             director.transform.SetParent(launchable.transform);
