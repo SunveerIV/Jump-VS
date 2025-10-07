@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using Game.Behaviours.Directors;
+using Game.Behaviours.Managers;
 using Game.Behaviours.Platforms;
 using Game.Interfaces;
 
@@ -26,6 +27,7 @@ namespace Game.Behaviours.Players {
         private IStickable stickable;
         
         private bool isAttachedToPlatform;
+        private float minYToRaiseCamera;
         
         public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ulong clientID) {
             PlayerMultiplayer player = Instantiate(prefab, position, Quaternion.identity);
@@ -41,12 +43,24 @@ namespace Game.Behaviours.Players {
                     Physics2D.IgnoreCollision(players[i].GetComponent<Collider2D>(), players[j].GetComponent<Collider2D>());
                 }
             }
+            minYToRaiseCamera = float.MinValue;
         }
 
         private void Update() {
             if (!IsOwner) return;
+            RaiseCamera();
             InstantiateDirector();
             RemainStuckToPlatform();
+        }
+
+        private void RaiseCamera() {
+            if (transform.position.y < minYToRaiseCamera) return;
+
+            Camera mainCamera = Camera.main;
+            minYToRaiseCamera = transform.position.y;
+            Vector3 currentCameraPos = mainCamera.transform.position;
+            currentCameraPos.y = transform.position.y;
+            mainCamera.transform.position = currentCameraPos;
         }
         
         private void InstantiateDirector() {
@@ -77,6 +91,8 @@ namespace Game.Behaviours.Players {
         }
 
         private void OnCollisionEnter2D(Collision2D collision) {
+            if (!IsOwner) return;
+            
             if (collision.gameObject.TryGetComponent(out PlatformBase newPlatform)) {
                 if (transform.position.y <= newPlatform.transform.position.y) {
                     //cachedBounces++;
