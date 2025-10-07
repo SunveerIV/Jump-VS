@@ -400,7 +400,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1244354983}
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+        m_TargetAssemblyTypeName: Game.Behaviours.Managers.SceneLoader, Assembly-CSharp
         m_MethodName: LoadStartMenu
         m_Mode: 1
         m_Arguments:
@@ -694,8 +694,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1244354983}
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
-        m_MethodName: LoadGame
+        m_TargetAssemblyTypeName: Game.Behaviours.Managers.SceneLoader, Assembly-CSharp
+        m_MethodName: LoadSingleplayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

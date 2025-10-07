@@ -6,7 +6,13 @@ namespace Game.Behaviours.Managers {
         private const string GAME_SCENE_NAME = "Core Game";
         private const string SINGLEPLAYER_END_SCREEN_NAME = "Singleplayer End Screen";
 
-        public static void LoadGame() {
+        public static void LoadSingleplayer() {
+            GameManager.Singleton.GameMode = GameMode.Singleplayer;
+            SceneManager.LoadScene(GAME_SCENE_NAME);
+        }
+
+        public static void LoadMultiplayer() {
+            GameManager.Singleton.GameMode = GameMode.Multiplayer;
             SceneManager.LoadScene(GAME_SCENE_NAME);
         }
 
