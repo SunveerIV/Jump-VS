@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
@@ -8,12 +9,14 @@ using Game.Behaviours.Platforms;
 namespace Game.Behaviours.Managers {
     public class TwoPlayerLevel : MonoBehaviour, ILevel {
         
+        private const float MAX_DIFFERENCE = 6f;
         private const float PLAYER_START_Y = 1.6f;
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
 
         private List<PlatformMultiplayer> platforms;
+        private List<PlayerMultiplayer> players;
         
         private float highestPlatform;
         
@@ -25,11 +28,49 @@ namespace Game.Behaviours.Managers {
             if (manager.ConnectedClients.Count < 2) return;
             
             platforms = new List<PlatformMultiplayer>();
+            players = new List<PlayerMultiplayer>();
             highestPlatform = -1f;
             InstantiatePlatform();
             float playerStartPosX = platforms[0].transform.position.x;
             foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds) {
-                PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, PLAYER_START_Y), clientID);
+                PlayerMultiplayer player = PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, PLAYER_START_Y), clientID);
+                players.Add(player);
+            }
+
+            StartCoroutine(UpdateEverySecond());
+        }
+        
+        private IEnumerator UpdateEverySecond() {
+            while (true) {
+                UpdatePlatforms();
+                yield return new WaitForSeconds(1);
+            }
+        }
+        
+        private void UpdatePlatforms() {
+            Debug.Log("Platforms updated");
+            float highestCircle = float.MinValue;
+            float lowestCircle = float.MaxValue;
+            foreach (PlayerMultiplayer player in players) {
+                if (player.transform.position.y > highestCircle) {
+                    highestCircle = player.transform.position.y;
+                }
+
+                if (player.transform.position.y < lowestCircle) {
+                    lowestCircle = player.transform.position.y;
+                }
+            }
+
+            while (highestCircle + 15f > highestPlatform) {
+                InstantiatePlatform();
+            }
+
+            for (int i = platforms.Count - 1; i >= 0; i--) {
+                PlatformBase platform = platforms[i];
+                if (lowestCircle - platform.transform.position.y > MAX_DIFFERENCE) {
+                    Destroy(platform.gameObject);
+                    platforms.RemoveAt(i);
+                }
             }
         }
         
