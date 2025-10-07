@@ -33,6 +33,16 @@ namespace Game.Behaviours.Players {
             return player;
         }
 
+        public override void OnNetworkSpawn() {
+            base.OnNetworkSpawn();
+            PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
+            for (int i = 0; i < players.Length; i++) {
+                for (int j = i + 1; j < players.Length; j++) {
+                    Physics2D.IgnoreCollision(players[i].GetComponent<Collider2D>(), players[j].GetComponent<Collider2D>());
+                }
+            }
+        }
+
         private void Update() {
             if (!IsOwner) return;
             InstantiateDirector();
