@@ -36,12 +36,21 @@ namespace Game.Behaviours.Players {
         private void Update() {
             if (!IsOwner) return;
             InstantiateDirector();
+            RemainStuckToPlatform();
         }
         
         private void InstantiateDirector() {
             if (isAttachedToPlatform && Input.GetMouseButtonDown(0)) {
                 Director.Create(directorPrefab, this);
             }
+        }
+        
+        private void RemainStuckToPlatform() {
+            if (stickable == null) return;
+            
+            Vector3 playerPos = transform.position;
+            playerPos.x = stickable.transform.position.x;
+            transform.position = playerPos;
         }
         
         public void Launch(Vector3 directorPosition) {
