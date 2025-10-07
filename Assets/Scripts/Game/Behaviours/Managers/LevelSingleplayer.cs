@@ -5,7 +5,6 @@ using Game.UI;
 using Game.Interfaces;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
-using UnityEditor;
 
 namespace Game.Behaviours.Managers {
     public class LevelSingleplayer : MonoBehaviour, ILevel {
@@ -19,7 +18,7 @@ namespace Game.Behaviours.Managers {
 
         private SingleplayerCanvas gui;
         
-        private List<PlayerBase> players;
+        private List<PlayerSingleplayer> players;
         private List<PlatformBase> platforms;
 
         private float highestPlatform;
@@ -37,7 +36,7 @@ namespace Game.Behaviours.Managers {
             highestPlatform = -1f;
             InstantiatePlatform();
             float playerStartPosX = platforms[0].transform.position.x;
-            players = new List<PlayerBase>();
+            players = new List<PlayerSingleplayer>();
             PlayerSingleplayer player = PlayerSingleplayer.Create(playerSingleplayerPrefab, new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
             players.Add(player);
             StartCoroutine(UpdateEverySecond());
@@ -53,7 +52,7 @@ namespace Game.Behaviours.Managers {
         private void UpdatePlatforms() {
             float highestCircle = float.MinValue;
             float lowestCircle = float.MaxValue;
-            foreach (PlayerBase player in players) {
+            foreach (PlayerSingleplayer player in players) {
                 if (player.transform.position.y > highestCircle) {
                     highestCircle = player.transform.position.y;
                 }
@@ -78,7 +77,7 @@ namespace Game.Behaviours.Managers {
 
         private void InstantiatePlatform() {
             highestPlatform += 2f;
-            PlatformBase platform = PlatformSingleplayer.Create(platformSingleplayerPrefab, new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform),
+            PlatformBase platform = PlatformSingleplayer.Create(platformSingleplayerPrefab, new Vector2(Random.Range(-2f, 2f), highestPlatform),
                 Quaternion.identity, platformIndex);
             platformIndex++;
             platforms.Add(platform);
