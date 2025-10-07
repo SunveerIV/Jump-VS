@@ -7,6 +7,8 @@ using Game.Behaviours.Platforms;
 
 namespace Game.Behaviours.Managers {
     public class TwoPlayerLevel : MonoBehaviour, ILevel {
+        
+        private const float PLAYER_START_Y = 1.6f;
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
@@ -25,11 +27,15 @@ namespace Game.Behaviours.Managers {
             platforms = new List<PlatformMultiplayer>();
             highestPlatform = -1f;
             InstantiatePlatform();
+            float playerStartPosX = platforms[0].transform.position.x;
+            foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds) {
+                PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, PLAYER_START_Y), clientID);
+            }
         }
         
         private void InstantiatePlatform() {
             highestPlatform += 2f;
-            PlatformMultiplayer platform = PlatformMultiplayer.Create(platformMultiplayerPrefab, new Vector2(UnityEngine.Random.Range(-2f, 2f), highestPlatform), platformIndex);
+            PlatformMultiplayer platform = PlatformMultiplayer.Create(platformMultiplayerPrefab, new Vector2(Random.Range(-2f, 2f), highestPlatform), platformIndex);
             platformIndex++;
             platforms.Add(platform);
         }
