@@ -68,6 +68,12 @@ sysinfo.txt
 *.unitypackage.meta
 *.app
 
+# Sensitive Multiplayer Information
+*.env
+*.pem
+*.p12
+ProjectSettings/ServicesSettings.asset
+
 # Crashlytics generated file
 crashlytics-build.properties
 
