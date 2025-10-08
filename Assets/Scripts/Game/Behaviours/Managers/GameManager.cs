@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 using Game.Settings;
 
 namespace Game.Behaviours.Managers {
@@ -9,13 +10,18 @@ namespace Game.Behaviours.Managers {
 
         [Header("Prefabs")]
         [SerializeField] private LevelSingleplayer levelSingleplayerPrefab;
+        [SerializeField] private NetworkManager twoPlayerNetworkManagerPrefab;
         
         [Header("Audio")]
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip gameMusic;
         [SerializeField] private AudioClip failSong;
 
-        private LevelSingleplayer level;
+        private GameMode gameMode;
+
+        public GameMode GameMode {
+            set => gameMode = value;
+        }
 
         private void Awake() {
             if (Singleton != null) {
@@ -38,12 +44,10 @@ namespace Game.Behaviours.Managers {
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
             Application.targetFrameRate = 60;
             audioSource.Stop();
-            level = FindFirstObjectByType<LevelSingleplayer>();
 
             switch (scene.name) {
                 case "Core Game": {
-                    PlaySong(gameMusic);
-                    LevelSingleplayer.Create(levelSingleplayerPrefab);
+                    LoadGame();
                     break;
                 }
 
@@ -52,6 +56,21 @@ namespace Game.Behaviours.Managers {
                     break;
                 }
             }
+        }
+
+        private void LoadGame() {
+            PlaySong(gameMusic);
+            switch (gameMode) {
+                case GameMode.Singleplayer: {
+                    LevelSingleplayer.Create(levelSingleplayerPrefab);
+                    break;
+                }
+                case GameMode.Multiplayer: {
+                    Instantiate(twoPlayerNetworkManagerPrefab);
+                    break;
+                }
+            }
+            
         }
 
         private void PlaySong(AudioClip song) {
