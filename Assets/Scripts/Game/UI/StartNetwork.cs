@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
@@ -8,7 +7,6 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Services.Authentication;
 using Unity.Services.Core.Environments;
-using UnityEngine.Rendering.UI;
 
 namespace Game.UI {
     public class StartNetwork : MonoBehaviour{
