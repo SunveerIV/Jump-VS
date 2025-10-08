@@ -124,7 +124,7 @@ namespace Game.Behaviours.Players {
         [ClientRpc]
         public void EndGameClientRpc() {
             Debug.Log("Client attempting to end game");
-            SceneLoader.LoadSingleplayerEndScreen();
+            SceneLoader.LoadMultiplayerEndScreen();
         }
     }
     

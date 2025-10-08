@@ -107,7 +107,7 @@ namespace Game.Behaviours.Managers {
             foreach (var player in players) {
                 player.EndGameClientRpc();
             }
-            SceneLoader.LoadSingleplayerEndScreen();
+            SceneLoader.LoadMultiplayerEndScreen();
         }
     }
 }

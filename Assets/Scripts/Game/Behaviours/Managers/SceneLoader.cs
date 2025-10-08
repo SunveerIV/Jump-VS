@@ -5,6 +5,7 @@ namespace Game.Behaviours.Managers {
     public class SceneLoader : MonoBehaviour {
         private const string GAME_SCENE_NAME = "Core Game";
         private const string SINGLEPLAYER_END_SCREEN_NAME = "Singleplayer End Screen";
+        private const string MULTIPLAYER_END_SCREEN_NAME = "Multiplayer End Screen";
 
         public static void LoadSingleplayer() {
             GameManager.Singleton.GameMode = GameMode.Singleplayer;
@@ -20,6 +21,10 @@ namespace Game.Behaviours.Managers {
             SceneManager.LoadScene(SINGLEPLAYER_END_SCREEN_NAME);
         }
 
+        public static void LoadMultiplayerEndScreen() {
+            SceneManager.LoadScene(MULTIPLAYER_END_SCREEN_NAME);
+        }
+        
         public static void LoadStartMenu() {
             SceneManager.LoadScene(0);
         }
