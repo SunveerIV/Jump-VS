@@ -11,7 +11,8 @@ using Unity.Services.Core.Environments;
 namespace Game.UI {
     public class StartNetwork : MonoBehaviour{
         
-        [SerializeField] private TMP_InputField inputField;
+        [SerializeField] private TMP_InputField lobbyCodeInputField;
+        [SerializeField] private TMP_Text lobbyCodeOutputText;
         
         public async void StartHost() {
             #if UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
@@ -19,7 +20,7 @@ namespace Game.UI {
             NetworkManager.Singleton.StartHost();
             
             #else
-            
+            Debug.Log("StartHost");
             await UnityServices.InitializeAsync(new InitializationOptions().SetEnvironmentName("production"));
             
             int maxConnections = 2;
@@ -31,9 +32,11 @@ namespace Game.UI {
             var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
             transport.SetRelayServerData(AllocationUtils.ToRelayServerData(alloc, "dtls"));
             
-            Debug.Log(await RelayService.Instance.GetJoinCodeAsync(alloc.AllocationId));
+            string lobbyCode = await RelayService.Instance.GetJoinCodeAsync(alloc.AllocationId);
+            Debug.Log(lobbyCode);
             NetworkManager.Singleton.StartHost();
 
+            lobbyCodeOutputText.text = "Lobby Code\n" + lobbyCode;
             #endif
         }
 
@@ -47,7 +50,7 @@ namespace Game.UI {
             Debug.Log("Attempting to start client connection");
             await UnityServices.InitializeAsync(new InitializationOptions().SetEnvironmentName("production"));
             
-            string joinCode = inputField.text;
+            string joinCode = lobbyCodeInputField.text;
             Debug.Log("Joining code: " + joinCode);
             Debug.Log("Async initialized");
             if (!AuthenticationService.Instance.IsSignedIn)
