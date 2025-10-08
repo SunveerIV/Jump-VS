@@ -92,6 +92,7 @@ crashlytics-build.properties
 
 # My Settings
 /.idea
+/.vscode
 
 # Optional Packages
 /[Aa]ssets/ParrelSync
