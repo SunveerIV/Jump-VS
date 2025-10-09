@@ -13,7 +13,6 @@ namespace Game.Behaviours.Players {
         private const float EXPONENT_FOR_PLATFORM_DIFFERENCE = 12f;
 
         [Header("Prefabs")] 
-        [SerializeField] private Director directorPrefab;
         [SerializeField] private LineDirector lineDirectorPrefab;
 
         [Header("Audio")] 
