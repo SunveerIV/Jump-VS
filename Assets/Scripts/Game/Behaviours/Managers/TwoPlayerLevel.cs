@@ -108,6 +108,7 @@ namespace Game.Behaviours.Managers {
                 player.EndGameClientRpc();
             }
             SceneLoader.LoadMultiplayerEndScreen();
+            Destroy(gameObject);
         }
     }
 }
