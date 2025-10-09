@@ -21,9 +21,13 @@ namespace Game.Behaviours.Platforms {
 
         public int Index => index;
 
-        public float ScoreMultiplier => isMovingPlatform
-            ? Mathf.Pow(velocityAmplifier, SCORE_MULTIPLIER_EXPONENT)
-            : DEFAULT_SCORE_MULTIPLIER;
+        public float ScoreMultiplier {
+            get {
+                if (index == 0) return DEFAULT_SCORE_MULTIPLIER;
+                float velocityBonus = isMovingPlatform ? Mathf.Pow(velocityAmplifier, SCORE_MULTIPLIER_EXPONENT) : DEFAULT_SCORE_MULTIPLIER;
+                return velocityBonus;
+            }
+        }
 
         protected void Initialize(int index) {
             this.index = index;
