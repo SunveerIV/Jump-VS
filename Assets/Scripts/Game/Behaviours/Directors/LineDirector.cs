@@ -8,6 +8,7 @@ namespace Game.Behaviours.Directors {
     public class LineDirector : MonoBehaviour {
 
         private const float GROW_RATE = 0.04f;
+        private const int MAX_LENGTH = 300;
         private const float MIN_DISTANCE_FROM_PLAYER = 0.4f;
         private const float MAX_DISTANCE = 3f;
         private const float TIME_STEP = 0.01f;
@@ -38,14 +39,15 @@ namespace Game.Behaviours.Directors {
         private void DrawTrajectory() {
             Vector3 startPos = launchable.transform.position;
             Vector3 startVel = (transform.position - launchable.transform.position) * PlayerSingleplayer.VELOCITY_AMPLIFIER;
-            int resolution = (int)((DateTime.Now - timeCreated).TotalMilliseconds * GROW_RATE);
+            int lineLength = (int)((DateTime.Now - timeCreated).TotalMilliseconds * GROW_RATE);
+            lineLength = Math.Min(lineLength, MAX_LENGTH);
 
-            List<Vector3> points = new List<Vector3>(resolution);
+            List<Vector3> points = new List<Vector3>(lineLength);
 
-            for (int i = 0; i < resolution; i++) {
-                float t = i * TIME_STEP;
-                Vector3 pos = startPos + startVel * t + 0.5f * (Vector3)Physics2D.gravity * t * t;
-                points.Add(pos);
+            for (int i = 0; i < lineLength; i++) {
+                float time = i * TIME_STEP;
+                Vector3 linePointPos = startPos + startVel * time + 0.5f * (Vector3)Physics2D.gravity * time * time;
+                points.Add(linePointPos);
             }
 
             List<Vector3> pointsToBeRemoved = new List<Vector3>(5);
