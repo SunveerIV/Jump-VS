@@ -48,8 +48,15 @@ namespace Game.Behaviours.Directors {
                 points.Add(pos);
             }
 
-            for (int i = points.Count - 1; i >= 0; i--) {
-                if (Vector3.Distance(startPos, points[i]) < MIN_DISTANCE_FROM_PLAYER) points.RemoveAt(i);
+            List<Vector3> pointsToBeRemoved = new List<Vector3>(5);
+            foreach (Vector3 point in points) {
+                if (Vector3.Distance(startPos, point) >= MIN_DISTANCE_FROM_PLAYER) break;
+                
+                pointsToBeRemoved.Add(point);
+            }
+
+            foreach (Vector3 point in pointsToBeRemoved) {
+                points.Remove(point);
             }
 
             line.positionCount = points.Count;
