@@ -8,7 +8,7 @@ namespace Game.Behaviours.Directors {
     public class LineDirector : MonoBehaviour {
 
         private const float GROW_RATE = 0.04f;
-        private const float MIN_DISTANCE_FROM_PLAYER = 0.2f;
+        private const float MIN_DISTANCE_FROM_PLAYER = 0.4f;
         private const float MAX_DISTANCE = 3f;
         private const float TIME_STEP = 0.01f;
 
@@ -88,13 +88,14 @@ namespace Game.Behaviours.Directors {
         
         /// <summary>
         /// If the player releases MouseButton1 or stops touching the screen,
-        /// launchable is launched and Director is destroyed
+        /// launchable is launched and Director is destroyed.
+        /// If launchable is too close to Director, launchable is not launched
         /// </summary>
         private void Delete() {
-            if (Input.GetMouseButtonUp(0)) {
-                launchable.Launch(transform.position);
-                Destroy(gameObject);
-            }
+            if (!Input.GetMouseButtonUp(0)) return;
+            Destroy(gameObject);
+            if (Vector3.Distance(transform.position, launchable.transform.position) < MIN_DISTANCE_FROM_PLAYER) return;
+            launchable.Launch(transform.position);
         }
     }
 }
