@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Game.Behaviours.Players;
 using UnityEngine;
 using Game.Interfaces;
@@ -7,6 +8,7 @@ namespace Game.Behaviours.Directors {
     public class LineDirector : MonoBehaviour {
 
         private const float GROW_RATE = 0.04f;
+        private const float MIN_DISTANCE_FROM_PLAYER = 0.2f;
         private const float MAX_DISTANCE = 3f;
         private const float TIME_STEP = 0.01f;
 
@@ -34,20 +36,24 @@ namespace Game.Behaviours.Directors {
         }
 
         private void DrawTrajectory() {
-            Vector2 startPos = launchable.transform.position;
-            Vector2 startVel = (transform.position - launchable.transform.position) * PlayerSingleplayer.VELOCITY_AMPLIFIER;
+            Vector3 startPos = launchable.transform.position;
+            Vector3 startVel = (transform.position - launchable.transform.position) * PlayerSingleplayer.VELOCITY_AMPLIFIER;
             int resolution = (int)((DateTime.Now - timeCreated).TotalMilliseconds * GROW_RATE);
-            line.positionCount = resolution;
-            Vector3[] points = new Vector3[resolution];
-            Debug.Log(points.Length);
+
+            List<Vector3> points = new List<Vector3>(resolution);
 
             for (int i = 0; i < resolution; i++) {
                 float t = i * TIME_STEP;
-                Vector2 pos = startPos + startVel * t + 0.5f * Physics2D.gravity * t * t;
-                points[i] = pos;
+                Vector3 pos = startPos + startVel * t + 0.5f * (Vector3)Physics2D.gravity * t * t;
+                points.Add(pos);
             }
 
-            line.SetPositions(points);
+            for (int i = points.Count - 1; i >= 0; i--) {
+                if (Vector3.Distance(startPos, points[i]) < MIN_DISTANCE_FROM_PLAYER) points.RemoveAt(i);
+            }
+
+            line.positionCount = points.Count;
+            line.SetPositions(points.ToArray());
         }
         
         /// <summary>
