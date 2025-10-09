@@ -86,7 +86,7 @@ namespace Game.Behaviours.Players {
             rb.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
         }
         
-        private void StickToPlatform(PlatformBase newPlatform) {
+        private void StickToPlatform(PlatformMultiplayer newPlatform) {
             rb.linearVelocity = Vector2.zero;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
             isAttachedToPlatform = true;
@@ -96,7 +96,7 @@ namespace Game.Behaviours.Players {
         private void OnCollisionEnter2D(Collision2D collision) {
             if (!IsOwner) return;
             
-            if (collision.gameObject.TryGetComponent(out PlatformBase newPlatform)) {
+            if (collision.gameObject.TryGetComponent(out PlatformMultiplayer newPlatform)) {
                 if (transform.position.y <= newPlatform.transform.position.y) {
                     //cachedBounces++;
                 }
