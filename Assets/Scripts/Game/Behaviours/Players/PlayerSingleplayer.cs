@@ -8,12 +8,12 @@ using Game.Behaviours.Directors;
 namespace Game.Behaviours.Players {
     public class PlayerSingleplayer : MonoBehaviour, ILaunchable {
         
-        private const float VELOCITY_AMPLIFIER = 4f;
+        public const float VELOCITY_AMPLIFIER = 4f;
         private const float BASE_POWER_FOR_BOUNCES = 1.3f;
         private const float EXPONENT_FOR_PLATFORM_DIFFERENCE = 12f;
 
         [Header("Prefabs")] 
-        [SerializeField] private Director directorPrefab;
+        [SerializeField] private LineDirector lineDirectorPrefab;
 
         [Header("Audio")] 
         [SerializeField] private AudioClip stickSound;
@@ -70,7 +70,7 @@ namespace Game.Behaviours.Players {
 
         private void InstantiateDirector() {
             if (isAttachedToPlatform && Input.GetMouseButtonDown(0)) {
-                Director.Create(directorPrefab, this);
+                LineDirector.Create(lineDirectorPrefab, this);
             }
         }
 
