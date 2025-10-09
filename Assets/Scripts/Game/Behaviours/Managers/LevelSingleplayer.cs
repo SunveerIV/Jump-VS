@@ -19,7 +19,7 @@ namespace Game.Behaviours.Managers {
         private SingleplayerCanvas gui;
         
         private List<PlayerSingleplayer> players;
-        private List<PlatformBase> platforms;
+        private List<PlatformSingleplayer> platforms;
 
         private float highestPlatform;
 
@@ -32,7 +32,7 @@ namespace Game.Behaviours.Managers {
 
         private void Start() {
             gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
-            platforms = new List<PlatformBase>();
+            platforms = new List<PlatformSingleplayer>();
             highestPlatform = -1f;
             InstantiatePlatform();
             float playerStartPosX = platforms[0].transform.position.x;
@@ -67,7 +67,7 @@ namespace Game.Behaviours.Managers {
             }
 
             for (int i = platforms.Count - 1; i >= 0; i--) {
-                PlatformBase platform = platforms[i];
+                PlatformSingleplayer platform = platforms[i];
                 if (lowestCircle - platform.transform.position.y > MAX_DIFFERENCE) {
                     Destroy(platform.gameObject);
                     platforms.RemoveAt(i);
@@ -77,7 +77,7 @@ namespace Game.Behaviours.Managers {
 
         private void InstantiatePlatform() {
             highestPlatform += 2f;
-            PlatformBase platform = PlatformSingleplayer.Create(platformSingleplayerPrefab, new Vector2(Random.Range(-2f, 2f), highestPlatform),
+            PlatformSingleplayer platform = PlatformSingleplayer.Create(platformSingleplayerPrefab, new Vector2(Random.Range(-2f, 2f), highestPlatform),
                 Quaternion.identity, platformIndex);
             platformIndex++;
             platforms.Add(platform);
