@@ -30,7 +30,6 @@ namespace Game.Behaviours.Managers {
             }
             Singleton = this;
             DontDestroyOnLoad(gameObject);
-            AudioListener.volume = UserSettings.MasterVolume;
         }
 
         private void OnEnable() {
@@ -44,6 +43,7 @@ namespace Game.Behaviours.Managers {
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
             Application.targetFrameRate = 60;
             audioSource.Stop();
+            audioSource.volume = UserSettings.MusicVolume;
 
             switch (scene.name) {
                 case "Core Game": {
