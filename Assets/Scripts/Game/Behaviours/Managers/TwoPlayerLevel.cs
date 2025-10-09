@@ -65,7 +65,7 @@ namespace Game.Behaviours.Managers {
             }
 
             for (int i = platforms.Count - 1; i >= 0; i--) {
-                PlatformBase platform = platforms[i];
+                PlatformMultiplayer platform = platforms[i];
                 if (lowestCircle - platform.transform.position.y > MAX_DIFFERENCE) {
                     platform.gameObject.GetComponent<NetworkObject>().Despawn();
                     platforms.RemoveAt(i);
