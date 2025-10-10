@@ -15,7 +15,7 @@ namespace Game.UI {
         [SerializeField] private TMP_Text lobbyCodeOutputText;
         
         public async void StartHost() {
-            #if !UNITY_EDITOR
+            #if UNITY_EDITOR
             
             NetworkManager.Singleton.StartHost();
             
