@@ -10,7 +10,7 @@ using Game.Behaviours.Platforms;
 using Game.Behaviours.Colliders;
 
 namespace Game.Behaviours.Managers {
-    public class TwoPlayerLevel : NetworkBehaviour, ILevel {
+    public class TwoPlayerLevel : NetworkBehaviour, ILevelMultiplayer {
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
