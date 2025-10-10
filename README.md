@@ -27,5 +27,5 @@ The following information has been excluded from the repository for security rea
 ## Building: 
 Follow these steps in the Unity Editor to generate a functional build for your desired platform: 
 - Go to **Edit -> Project Settings -> Services**, and assign an Organization and cloud project. 
-- Go to **Assets/Prefabs/Managers/Network**, and set the **Protocol Type** to **Relay Unity Transport** in the **Unity Transport Component** for each item in that directory. 
+- Go to **Assets/Prefabs/Managers**, select the **NetworkManager** prefab, and set the **Protocol Type** to **Relay Unity Transport** in the **Unity Transport** Component. 
 - Go to **File -> Build Profiles** and build your project for your desired platform.

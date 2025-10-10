@@ -1175,7 +1175,7 @@ GameObject:
   - component: {fileID: -907805579262167322}
   - component: {fileID: 2326233065545329314}
   m_Layer: 0
-  m_Name: TwoPlayerNetworkManager
+  m_Name: NetworkManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
