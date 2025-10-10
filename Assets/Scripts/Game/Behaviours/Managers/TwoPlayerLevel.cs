@@ -122,16 +122,8 @@ namespace Game.Behaviours.Managers {
             Debug.Log("Attempting to set score on client");
             PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
             bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
-            float myScore;
-            float otherScore;
-            if (player0IsMe) {
-                myScore = players[0].Score;
-                otherScore = players[1].Score;
-            }
-            else {
-                myScore = players[1].Score;
-                otherScore = players[0].Score;
-            }
+            float myScore = player0IsMe ? players[0].Score : players[1].Score;
+            float otherScore = player0IsMe ? players[1].Score : players[0].Score;
             
             gui.ScoreText = myScore - otherScore;
         }
