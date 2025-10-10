@@ -9,24 +9,38 @@ using Game.Behaviours.Platforms;
 using Game.Behaviours.Colliders;
 
 namespace Game.Behaviours.Managers {
-    public class TwoPlayerLevel : MonoBehaviour, ILevel {
+    public class TwoPlayerLevel : NetworkBehaviour, ILevelMultiplayer {
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
         [SerializeField] private KillCollider killColliderPrefab;
+
+        private bool clientInitialized;
 
         private Dictionary<int, PlatformMultiplayer> platforms;
         private List<PlayerMultiplayer> players;
         
         private float highestPlatform;
         
-        private int platformIndex = 0;
+        private ushort platformIndex = 0;
         
         private void OnClientConnected(ulong clientId) {
-            NetworkManager manager = NetworkManager.Singleton;
-            if (manager.IsClient) KillCollider.Create(killColliderPrefab);
-            if (!manager.IsServer) return;
-            if (manager.ConnectedClients.Count < 2) return;
+            InitializeClient();
+            InitializeServer();
+        }
+
+        private void InitializeClient() {
+            if (!IsClient) return;
+            if (clientInitialized) return;
+            clientInitialized = true;
+
+            
+            KillCollider.Create(killColliderPrefab);
+        }
+
+        private void InitializeServer() {
+            if (!IsServer) return;
+            if (NetworkManager.Singleton.ConnectedClients.Count < 2) return;
             
             platforms = new Dictionary<int, PlatformMultiplayer>();
             players = new List<PlayerMultiplayer>();
@@ -34,10 +48,9 @@ namespace Game.Behaviours.Managers {
             InstantiatePlatform();
             float playerStartPosX = platforms[0].transform.position.x;
             foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds) {
-                PlayerMultiplayer player = PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), clientID);
+                PlayerMultiplayer player = PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), this, clientID);
                 players.Add(player);
             }
-
             StartCoroutine(UpdateEverySecond());
         }
         
@@ -93,14 +106,16 @@ namespace Game.Behaviours.Managers {
         }
 
         public void UpdateScore() {
-            
+            foreach (var player in players) {
+                player.UpdateScoreTextClientRpc();
+            }
         }
 
         public void EndGame() {
             Debug.Log("Num Players: " + players.Count);
             int activePlayers = 0;
             foreach (var player in players) {
-                activePlayers += player.hasLost.Value ? 0 : 1;
+                activePlayers += player.HasLost ? 0 : 1;
             }
             Debug.Log("Num active Players: " + activePlayers);
             

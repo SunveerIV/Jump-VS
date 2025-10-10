@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelSingleplayerPrefab: {fileID: 2747360477090231669, guid: e37f2136b0c1d412784d54a5760bb09a, type: 3}
-  twoPlayerNetworkManagerPrefab: {fileID: -907805579262167322, guid: 156664b47848d67469f820f42b92b52f, type: 3}
+  twoPlayerLevelPrefab: {fileID: -2877460244767483452, guid: 2a833e09b87378d46a2cdc260f616340, type: 3}
+  networkManagerPrefab: {fileID: -907805579262167322, guid: 156664b47848d67469f820f42b92b52f, type: 3}
   audioSource: {fileID: 8292747659752530667}
   gameMusic: {fileID: 8300000, guid: bb266c2c0dea91441a8aaa28bae4dfa7, type: 3}
   failSong: {fileID: 8300000, guid: ef3f60df12a2896468b6dc3fc6f6a751, type: 3}
