@@ -15,7 +15,7 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
 
-        private List<PlatformMultiplayer> platforms;
+        private Dictionary<int, PlatformMultiplayer> platforms;
         private List<PlayerMultiplayer> players;
         
         private float highestPlatform;
@@ -27,7 +27,7 @@ namespace Game.Behaviours.Managers {
             if (!manager.IsServer) return;
             if (manager.ConnectedClients.Count < 2) return;
             
-            platforms = new List<PlatformMultiplayer>();
+            platforms = new Dictionary<int, PlatformMultiplayer>();
             players = new List<PlayerMultiplayer>();
             highestPlatform = -1f;
             InstantiatePlatform();
@@ -67,8 +67,8 @@ namespace Game.Behaviours.Managers {
             for (int i = platforms.Count - 1; i >= 0; i--) {
                 PlatformMultiplayer platform = platforms[i];
                 if (lowestCircle - platform.transform.position.y > MAX_DIFFERENCE) {
+                    platforms.Remove(platform.Index);
                     platform.gameObject.GetComponent<NetworkObject>().Despawn();
-                    platforms.RemoveAt(i);
                 }
             }
         }
@@ -76,9 +76,11 @@ namespace Game.Behaviours.Managers {
         private void InstantiatePlatform() {
             highestPlatform += 2f;
             PlatformMultiplayer platform = PlatformMultiplayer.Create(platformMultiplayerPrefab, new Vector2(Random.Range(-2f, 2f), highestPlatform), platformIndex);
+            platforms.Add(platformIndex, platform);
             platformIndex++;
-            platforms.Add(platform);
         }
+        
+        public PlatformMultiplayer GetPlatformAtIndex(int platformIndex) => platforms[platformIndex];
         
         private void OnEnable() {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
