@@ -18,6 +18,7 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private KillCollider killColliderPrefab;
 
         private SingleplayerCanvas gui;
+        private bool clientInitialized;
 
         private Dictionary<int, PlatformMultiplayer> platforms;
         private List<PlayerMultiplayer> players;
@@ -33,7 +34,9 @@ namespace Game.Behaviours.Managers {
 
         private void InitializeClient() {
             if (!IsClient) return;
-            
+            if (clientInitialized) return;
+            clientInitialized = true;
+
             gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
             KillCollider.Create(killColliderPrefab);
         }
