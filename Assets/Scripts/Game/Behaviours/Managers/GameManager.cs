@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
+using Game.Utility;
 using Game.Settings;
 
 namespace Game.Behaviours.Managers {
@@ -30,6 +31,7 @@ namespace Game.Behaviours.Managers {
             }
             Singleton = this;
             DontDestroyOnLoad(gameObject);
+            GameState.SetOrientationLock();
         }
 
         private void OnEnable() {
