@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using Game.Utility;
 using Game.Behaviours.Directors;
 using Game.Behaviours.Managers;
 using Game.Behaviours.Platforms;
@@ -98,7 +99,7 @@ namespace Game.Behaviours.Players {
             rb.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
         }
         
-        private void StickToPlatform(PlatformMultiplayer newPlatform) {
+        private void StickToPlatform(IPlatform newPlatform) {
             isAttachedToPlatform = true;
             StickToPlatformServerRpc(newPlatform.Index);
         }
@@ -115,7 +116,7 @@ namespace Game.Behaviours.Players {
         private void OnCollisionEnter2D(Collision2D collision) {
             if (!IsOwner) return;
 
-            if (collision.gameObject.TryGetComponent(out PlatformMultiplayer newPlatform)) {
+            if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
                 if (transform.position.y <= newPlatform.transform.position.y) {
                     //cachedBounces++;
                 }
