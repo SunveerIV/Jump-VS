@@ -11,13 +11,13 @@ namespace Game.Behaviours.Platforms {
 
         [SerializeField] private Rigidbody2D RB;
 
-        private NetworkVariable<int> index = new(0);
+        private NetworkVariable<ushort> index = new(0);
         
         private float velocityAmplifier;
         private bool isMovingPlatform;
         private int direction;
 
-        public int Index => index.Value;
+        public ushort Index => index.Value;
 
         public float ScoreMultiplier {
             get {
@@ -27,7 +27,7 @@ namespace Game.Behaviours.Platforms {
             }
         }
         
-        public static PlatformMultiplayer Create(PlatformMultiplayer prefab, Vector3 position, int index) {
+        public static PlatformMultiplayer Create(PlatformMultiplayer prefab, Vector3 position, ushort index) {
             PlatformMultiplayer platform = Instantiate(prefab, position, Quaternion.identity);
             platform.index.Value = index;
             platform.velocityAmplifier = Random.Range(Platform.MIN_VELOCITY_AMPLIFIER, Platform.MAX_VELOCITY_AMPLIFIER);

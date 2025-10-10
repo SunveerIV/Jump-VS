@@ -11,9 +11,9 @@ namespace Game.Behaviours.Platforms {
         private float velocityAmplifier;
         private bool isMovingPlatform;
         private int direction;
-        private int index;
+        private ushort index;
 
-        public int Index => index;
+        public ushort Index => index;
 
         public float ScoreMultiplier {
             get {
@@ -23,7 +23,7 @@ namespace Game.Behaviours.Platforms {
             }
         }
         
-        public static PlatformSingleplayer Create(PlatformSingleplayer prefab, Vector3 position, Quaternion rotation, int index) {
+        public static PlatformSingleplayer Create(PlatformSingleplayer prefab, Vector3 position, Quaternion rotation, ushort index) {
             PlatformSingleplayer platform = Instantiate(prefab, position, rotation);
             platform.index = index;
             platform.velocityAmplifier = Random.Range(Platform.MIN_VELOCITY_AMPLIFIER, Platform.MAX_VELOCITY_AMPLIFIER);
