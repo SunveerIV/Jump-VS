@@ -178,6 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   lineDirectorPrefab: {fileID: 2310344649337427519, guid: c479941d31b114046b489ca3786ca36a, type: 3}
+  singleplayerCanvasPrefab: {fileID: -4827545123000088766, guid: 220212de1e3ad5b41837715042ec6880, type: 3}
   stickSound: {fileID: 8300000, guid: 8652a670cec26c341aa12f5636b278e6, type: 3}
   bounceSound: {fileID: 8300000, guid: 4874713fadf66394e9332fff40daac4f, type: 3}
   audioSource: {fileID: 8464730257694946865}

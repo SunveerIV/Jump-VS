@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using Game.UI;
 using Game.Constants;
 using Game.Interfaces;
 using Game.Behaviours.Players;
@@ -14,10 +13,8 @@ namespace Game.Behaviours.Managers {
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
-        [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
         [SerializeField] private KillCollider killColliderPrefab;
 
-        private SingleplayerCanvas gui;
         private bool clientInitialized;
 
         private Dictionary<int, PlatformMultiplayer> platforms;
@@ -37,7 +34,7 @@ namespace Game.Behaviours.Managers {
             if (clientInitialized) return;
             clientInitialized = true;
 
-            gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
+            
             KillCollider.Create(killColliderPrefab);
         }
 
@@ -109,30 +106,16 @@ namespace Game.Behaviours.Managers {
         }
 
         public void UpdateScore() {
-            UpdateScoreClientRpc();
-        }
-
-        [ServerRpc]
-        private void UpdateScoreServerRpc() {
-            
-        }
-
-        [ClientRpc]
-        private void UpdateScoreClientRpc() {
-            Debug.Log("Attempting to set score on client");
-            PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
-            bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
-            float myScore = player0IsMe ? players[0].Score : players[1].Score;
-            float otherScore = player0IsMe ? players[1].Score : players[0].Score;
-            
-            gui.ScoreText = myScore - otherScore;
+            foreach (var player in players) {
+                player.UpdateScoreTextClientRpc();
+            }
         }
 
         public void EndGame() {
             Debug.Log("Num Players: " + players.Count);
             int activePlayers = 0;
             foreach (var player in players) {
-                activePlayers += player.hasLost.Value ? 0 : 1;
+                activePlayers += player.HasLost ? 0 : 1;
             }
             Debug.Log("Num active Players: " + activePlayers);
             
