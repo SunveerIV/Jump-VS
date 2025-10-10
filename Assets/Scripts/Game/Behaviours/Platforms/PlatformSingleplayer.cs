@@ -3,7 +3,7 @@ using UnityEngine;
 using Game.Utility;
 
 namespace Game.Behaviours.Platforms {
-    public class PlatformSingleplayer : MonoBehaviour, IStickable {
+    public class PlatformSingleplayer : MonoBehaviour, IPlatform {
         
         private const float PROBABILITY_OF_MOVING_PLATFORM = 0.35f;
         private const float DEFAULT_SCORE_MULTIPLIER = 1f;
