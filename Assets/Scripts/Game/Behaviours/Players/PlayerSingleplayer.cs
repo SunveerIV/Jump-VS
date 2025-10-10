@@ -1,17 +1,13 @@
 using UnityEngine;
 using Game.Utility;
 using Game.Settings;
+using Game.Constants;
 using Game.Interfaces;
-using Game.Behaviours.Platforms;
 using Game.Behaviours.Directors;
 
 
 namespace Game.Behaviours.Players {
     public class PlayerSingleplayer : MonoBehaviour, IPlayer, ILaunchable {
-        
-        public const float VELOCITY_AMPLIFIER = 4f;
-        private const float BASE_POWER_FOR_BOUNCES = 1.3f;
-        private const float EXPONENT_FOR_PLATFORM_DIFFERENCE = 12f;
 
         [Header("Prefabs")] 
         [SerializeField] private LineDirector lineDirectorPrefab;
@@ -86,7 +82,7 @@ namespace Game.Behaviours.Players {
         public void Launch(Vector3 directorPosition) {
             isAttachedToPlatform = false;
             stickable = null;
-            rb.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
+            rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
         }
 
         private void StickToPlatform(IPlatform newPlatform) {
@@ -102,8 +98,8 @@ namespace Game.Behaviours.Players {
             int platformDifferential = newPlatformIndex - previousPlatformIndex;
 
             if (platformDifferential > 0) {
-                float bounceMultiplier = Mathf.Pow(BASE_POWER_FOR_BOUNCES, cachedBounces);
-                float positionDifferenceMultiplier = Mathf.Pow(xPosDifference, EXPONENT_FOR_PLATFORM_DIFFERENCE);
+                float bounceMultiplier = Mathf.Pow(Player.BASE_POWER_FOR_BOUNCES, cachedBounces);
+                float positionDifferenceMultiplier = Mathf.Pow(xPosDifference, Player.EXPONENT_FOR_PLATFORM_DIFFERENCE);
                 previousScore = newPlatform.ScoreMultiplier * platformDifferential * bounceMultiplier *
                                 positionDifferenceMultiplier;
                 score += previousScore;
