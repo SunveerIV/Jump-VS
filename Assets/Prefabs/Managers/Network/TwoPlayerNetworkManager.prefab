@@ -1284,6 +1284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   platformMultiplayerPrefab: {fileID: 1461142023510495541, guid: a655802f06aa22f4dbd219705cf52711, type: 3}
   playerMultiplayerPrefab: {fileID: 2135628697679898862, guid: eaee16bbf635bd04b920c80b91b9e371, type: 3}
+  singleplayerCanvasPrefab: {fileID: -4827545123000088766, guid: 220212de1e3ad5b41837715042ec6880, type: 3}
   killColliderPrefab: {fileID: 4082131176725640748, guid: ad485394da7e15e4f9143eed8dba464f, type: 3}
 --- !u!1 &7773202402149855207
 GameObject:

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Game.UI;
 using Game.Constants;
 using Game.Interfaces;
 using Game.Behaviours.Players;
@@ -13,7 +14,10 @@ namespace Game.Behaviours.Managers {
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
+        [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
         [SerializeField] private KillCollider killColliderPrefab;
+
+        private SingleplayerCanvas gui;
 
         private Dictionary<int, PlatformMultiplayer> platforms;
         private List<PlayerMultiplayer> players;
@@ -24,7 +28,10 @@ namespace Game.Behaviours.Managers {
         
         private void OnClientConnected(ulong clientId) {
             NetworkManager manager = NetworkManager.Singleton;
-            if (manager.IsClient) KillCollider.Create(killColliderPrefab);
+            if (manager.IsClient) {
+                gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
+                KillCollider.Create(killColliderPrefab);
+            }
             if (!manager.IsServer) return;
             if (manager.ConnectedClients.Count < 2) return;
             
@@ -93,7 +100,27 @@ namespace Game.Behaviours.Managers {
         }
 
         public void UpdateScore() {
+            Debug.Log("Server Attempting to update score");
+            UpdateScoreClientRpc();
+        }
+
+        [ClientRpc]
+        private void UpdateScoreClientRpc() {
+            Debug.Log("Attempting to set score on client");
+            if (NetworkManager.Singleton == null) Debug.Log("null");
+            bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
+            float myScore;
+            float otherScore;
+            if (player0IsMe) {
+                myScore = players[0].Score;
+                otherScore = players[1].Score;
+            }
+            else {
+                myScore = players[1].Score;
+                otherScore = players[0].Score;
+            }
             
+            gui.ScoreText = myScore - otherScore;
         }
 
         public void EndGame() {
