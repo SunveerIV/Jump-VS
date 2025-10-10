@@ -50,13 +50,13 @@ namespace Game.Behaviours.Players {
         }
 
         private void Update() {
-            if (!IsOwner) return;
             RaiseCamera();
             InstantiateDirector();
             RemainStuckToPlatform();
         }
 
         private void RaiseCamera() {
+            if (!IsOwner) return;
             if (transform.position.y < minYToRaiseCamera) return;
 
             Camera mainCamera = Camera.main;
@@ -67,12 +67,19 @@ namespace Game.Behaviours.Players {
         }
         
         private void InstantiateDirector() {
+            if (!IsOwner) return;
             if (isAttachedToPlatform && Input.GetMouseButtonDown(0)) {
                 LineDirector.Create(lineDirectorPrefab, this);
             }
         }
-        
+
         private void RemainStuckToPlatform() {
+            if (!IsOwner) return;
+            RemainStuckToPlatformServerRpc();
+        }
+        
+        [ServerRpc]
+        private void RemainStuckToPlatformServerRpc() {
             if (stickable == null) return;
             
             Vector3 playerPos = transform.position;
@@ -82,15 +89,27 @@ namespace Game.Behaviours.Players {
         
         public void Launch(Vector3 directorPosition) {
             isAttachedToPlatform = false;
+            LaunchServerRpc(directorPosition);
+        }
+
+        [ServerRpc]
+        private void LaunchServerRpc(Vector3 directorPosition) {
             stickable = null;
             rb.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
         }
         
         private void StickToPlatform(PlatformMultiplayer newPlatform) {
-            rb.linearVelocity = Vector2.zero;
-            transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
             isAttachedToPlatform = true;
+            StickToPlatformServerRpc(newPlatform.Index);
+        }
+
+        [ServerRpc]
+        private void StickToPlatformServerRpc(int platformIndex) {
+            
+            rb.linearVelocity = Vector2.zero;
+            PlatformMultiplayer newPlatform = FindFirstObjectByType<TwoPlayerLevel>().GetPlatformAtIndex(platformIndex);
             stickable = newPlatform;
+            transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
         }
 
         private void OnCollisionEnter2D(Collision2D collision) {
