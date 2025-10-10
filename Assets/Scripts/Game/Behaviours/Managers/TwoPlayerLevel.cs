@@ -10,7 +10,7 @@ using Game.Behaviours.Platforms;
 using Game.Behaviours.Colliders;
 
 namespace Game.Behaviours.Managers {
-    public class TwoPlayerLevel : MonoBehaviour, ILevel {
+    public class TwoPlayerLevel : NetworkBehaviour, ILevel {
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
@@ -27,13 +27,20 @@ namespace Game.Behaviours.Managers {
         private int platformIndex = 0;
         
         private void OnClientConnected(ulong clientId) {
-            NetworkManager manager = NetworkManager.Singleton;
-            if (manager.IsClient) {
-                gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
-                KillCollider.Create(killColliderPrefab);
-            }
-            if (!manager.IsServer) return;
-            if (manager.ConnectedClients.Count < 2) return;
+            InitializeClient();
+            InitializeServer();
+        }
+
+        private void InitializeClient() {
+            if (!IsClient) return;
+            
+            gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
+            KillCollider.Create(killColliderPrefab);
+        }
+
+        private void InitializeServer() {
+            if (!IsServer) return;
+            if (NetworkManager.Singleton.ConnectedClients.Count < 2) return;
             
             platforms = new Dictionary<int, PlatformMultiplayer>();
             players = new List<PlayerMultiplayer>();
@@ -44,7 +51,6 @@ namespace Game.Behaviours.Managers {
                 PlayerMultiplayer player = PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), clientID);
                 players.Add(player);
             }
-
             StartCoroutine(UpdateEverySecond());
         }
         
@@ -100,14 +106,18 @@ namespace Game.Behaviours.Managers {
         }
 
         public void UpdateScore() {
-            Debug.Log("Server Attempting to update score");
             UpdateScoreClientRpc();
+        }
+
+        [ServerRpc]
+        private void UpdateScoreServerRpc() {
+            
         }
 
         [ClientRpc]
         private void UpdateScoreClientRpc() {
             Debug.Log("Attempting to set score on client");
-            if (NetworkManager.Singleton == null) Debug.Log("null");
+            PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
             bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
             float myScore;
             float otherScore;

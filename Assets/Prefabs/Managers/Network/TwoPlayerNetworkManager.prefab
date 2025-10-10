@@ -1174,7 +1174,6 @@ GameObject:
   - component: {fileID: 6831090794778400348}
   - component: {fileID: -907805579262167322}
   - component: {fileID: 2326233065545329314}
-  - component: {fileID: -5151929858858563205}
   m_Layer: 0
   m_Name: TwoPlayerNetworkManager
   m_TagString: Untagged
@@ -1270,22 +1269,6 @@ MonoBehaviour:
     PacketDelayMS: 0
     PacketJitterMS: 0
     PacketDropRate: 0
---- !u!114 &-5151929858858563205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7055213223233479748}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4f061fd38fc4c47a194bda0c5c19473, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  platformMultiplayerPrefab: {fileID: 1461142023510495541, guid: a655802f06aa22f4dbd219705cf52711, type: 3}
-  playerMultiplayerPrefab: {fileID: 2135628697679898862, guid: eaee16bbf635bd04b920c80b91b9e371, type: 3}
-  singleplayerCanvasPrefab: {fileID: -4827545123000088766, guid: 220212de1e3ad5b41837715042ec6880, type: 3}
-  killColliderPrefab: {fileID: 4082131176725640748, guid: ad485394da7e15e4f9143eed8dba464f, type: 3}
 --- !u!1 &7773202402149855207
 GameObject:
   m_ObjectHideFlags: 0

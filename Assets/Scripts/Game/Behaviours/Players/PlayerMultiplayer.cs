@@ -29,6 +29,7 @@ namespace Game.Behaviours.Players {
         
         //Cached References
         private IStickable stickable;
+        private ILevel level;
         
         //Scoring
         private float previousScore;
@@ -43,6 +44,7 @@ namespace Game.Behaviours.Players {
         public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ulong clientID) {
             PlayerMultiplayer player = Instantiate(prefab, position, Quaternion.identity);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientID, true);
+            player.level = FindFirstObjectByType<TwoPlayerLevel>();
             return player;
         }
 
@@ -140,11 +142,11 @@ namespace Game.Behaviours.Players {
             cachedBounces = 0;
             previousPlatformIndex = newPlatformIndex;
             
-            UpdateScoreServerRpc();
+            UpdateScoreFieldsServerRpc();
         }
 
         [ServerRpc]
-        private void UpdateScoreServerRpc() {
+        private void UpdateScoreFieldsServerRpc() {
             FindFirstObjectByType<TwoPlayerLevel>().UpdateScore();
         }
 
