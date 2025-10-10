@@ -51,7 +51,7 @@ namespace Game.Behaviours.Managers {
             InstantiatePlatform();
             float playerStartPosX = platforms[0].transform.position.x;
             foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds) {
-                PlayerMultiplayer player = PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), clientID);
+                PlayerMultiplayer player = PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), this, clientID);
                 players.Add(player);
             }
             StartCoroutine(UpdateEverySecond());

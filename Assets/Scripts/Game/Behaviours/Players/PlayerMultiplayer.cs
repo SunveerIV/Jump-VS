@@ -41,10 +41,10 @@ namespace Game.Behaviours.Players {
         
         public float Score => score.Value;
         
-        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ulong clientID) {
+        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ILevel level, ulong clientID) {
             PlayerMultiplayer player = Instantiate(prefab, position, Quaternion.identity);
+            player.level = level;
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientID, true);
-            player.level = FindFirstObjectByType<TwoPlayerLevel>();
             return player;
         }
 
@@ -147,7 +147,7 @@ namespace Game.Behaviours.Players {
 
         [ServerRpc]
         private void UpdateScoreFieldsServerRpc() {
-            FindFirstObjectByType<TwoPlayerLevel>().UpdateScore();
+            level.UpdateScore();
         }
 
         private void OnCollisionEnter2D(Collision2D collision) {
@@ -175,7 +175,7 @@ namespace Game.Behaviours.Players {
             Debug.Log("Server Requesting Despawn");
             hasLost.Value = true;
             GetComponent<Rigidbody2D>().simulated = false;
-            FindFirstObjectByType<TwoPlayerLevel>().EndGame();
+            level.EndGame();
         }
 
         [ClientRpc]
