@@ -5,6 +5,7 @@ using Game.UI;
 using Game.Interfaces;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
+using Game.Behaviours.Colliders;
 
 namespace Game.Behaviours.Managers {
     public class LevelSingleplayer : MonoBehaviour, ILevel {
@@ -15,6 +16,7 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private PlatformSingleplayer platformSingleplayerPrefab;
         [SerializeField] private PlayerSingleplayer playerSingleplayerPrefab;
         [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
+        [SerializeField] private KillCollider killColliderPrefab;
 
         private SingleplayerCanvas gui;
         
@@ -31,6 +33,7 @@ namespace Game.Behaviours.Managers {
         }
 
         private void Start() {
+            KillCollider.Create(killColliderPrefab);
             gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
             platforms = new List<PlatformSingleplayer>();
             highestPlatform = -1f;
