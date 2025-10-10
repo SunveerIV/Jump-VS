@@ -5,6 +5,7 @@ using Unity.Netcode;
 using Game.Interfaces;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
+using Game.Behaviours.Colliders;
 
 namespace Game.Behaviours.Managers {
     public class TwoPlayerLevel : MonoBehaviour, ILevel {
@@ -14,6 +15,7 @@ namespace Game.Behaviours.Managers {
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
+        [SerializeField] private KillCollider killColliderPrefab;
 
         private Dictionary<int, PlatformMultiplayer> platforms;
         private List<PlayerMultiplayer> players;
@@ -24,6 +26,7 @@ namespace Game.Behaviours.Managers {
         
         private void OnClientConnected(ulong clientId) {
             NetworkManager manager = NetworkManager.Singleton;
+            if (manager.IsClient) KillCollider.Create(killColliderPrefab);
             if (!manager.IsServer) return;
             if (manager.ConnectedClients.Count < 2) return;
             

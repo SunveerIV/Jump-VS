@@ -6,7 +6,7 @@ using Game.Behaviours.Directors;
 
 
 namespace Game.Behaviours.Players {
-    public class PlayerSingleplayer : MonoBehaviour, ILaunchable {
+    public class PlayerSingleplayer : MonoBehaviour, IPlayer, ILaunchable {
         
         public const float VELOCITY_AMPLIFIER = 4f;
         private const float BASE_POWER_FOR_BOUNCES = 1.3f;
@@ -118,6 +118,10 @@ namespace Game.Behaviours.Players {
             level.UpdateScore();
         }
 
+        public void RequestDespawn() {
+            level.EndGame();
+        }
+
         private void OnCollisionEnter2D(Collision2D collision) {
             switch (collision.gameObject.tag) {
                 case "Platform": {
@@ -137,11 +141,6 @@ namespace Game.Behaviours.Players {
                 case "Border": {
                     audioSource.PlayOneShot(bounceSound);
                     cachedBounces++;
-                    break;
-                }
-
-                case "BottomCollider": {
-                    level.EndGame();
                     break;
                 }
             }
