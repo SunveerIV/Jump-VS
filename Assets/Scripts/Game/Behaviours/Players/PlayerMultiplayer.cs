@@ -29,7 +29,7 @@ namespace Game.Behaviours.Players {
         
         //Cached References
         private IStickable stickable;
-        private ILevel level;
+        private ILevelMultiplayer level;
         
         //Scoring
         private float previousScore;
@@ -41,7 +41,7 @@ namespace Game.Behaviours.Players {
         
         public float Score => score.Value;
         
-        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ILevel level, ulong clientID) {
+        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ILevelMultiplayer level, ulong clientID) {
             PlayerMultiplayer player = Instantiate(prefab, position, Quaternion.identity);
             player.level = level;
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientID, true);
