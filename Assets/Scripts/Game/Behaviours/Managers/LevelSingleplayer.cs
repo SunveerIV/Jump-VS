@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Game.UI;
+using Game.Constants;
 using Game.Interfaces;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
@@ -9,9 +10,6 @@ using Game.Behaviours.Colliders;
 
 namespace Game.Behaviours.Managers {
     public class LevelSingleplayer : MonoBehaviour, ILevel {
-
-        private const float MAX_DIFFERENCE = 6f;
-        private const float PLAYER_START_Y = 1.6f;
 
         [SerializeField] private PlatformSingleplayer platformSingleplayerPrefab;
         [SerializeField] private PlayerSingleplayer playerSingleplayerPrefab;
@@ -40,7 +38,7 @@ namespace Game.Behaviours.Managers {
             InstantiatePlatform();
             float playerStartPosX = platforms[0].transform.position.x;
             players = new List<PlayerSingleplayer>();
-            PlayerSingleplayer player = PlayerSingleplayer.Create(playerSingleplayerPrefab, new Vector2(playerStartPosX, PLAYER_START_Y), Quaternion.identity, this);
+            PlayerSingleplayer player = PlayerSingleplayer.Create(playerSingleplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), Quaternion.identity, this);
             players.Add(player);
             StartCoroutine(UpdateEverySecond());
         }
@@ -71,7 +69,7 @@ namespace Game.Behaviours.Managers {
 
             for (int i = platforms.Count - 1; i >= 0; i--) {
                 PlatformSingleplayer platform = platforms[i];
-                if (lowestCircle - platform.transform.position.y > MAX_DIFFERENCE) {
+                if (lowestCircle - platform.transform.position.y > Level.MAX_DIFFERENCE) {
                     Destroy(platform.gameObject);
                     platforms.RemoveAt(i);
                 }
@@ -79,7 +77,7 @@ namespace Game.Behaviours.Managers {
         }
 
         private void InstantiatePlatform() {
-            highestPlatform += 2f;
+            highestPlatform += Level.DISTANCE_BETWEEN_PLATFORMS;
             PlatformSingleplayer platform = PlatformSingleplayer.Create(platformSingleplayerPrefab, new Vector2(Random.Range(-2f, 2f), highestPlatform),
                 Quaternion.identity, platformIndex);
             platformIndex++;

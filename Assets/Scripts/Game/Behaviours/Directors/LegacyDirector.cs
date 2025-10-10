@@ -1,20 +1,16 @@
 using UnityEngine;
+using Game.Constants;
 using Game.Interfaces;
 
 namespace Game.Behaviours.Directors {
-    public class Director : MonoBehaviour {
-
-        private static readonly Quaternion START_ROTATION = new Quaternion(0, 0, 0, 1);
-        private const float SCALE_SCALE = 5f;
-        private const float MAX_DISTANCE = 3f;
+    public class LegacyDirector : MonoBehaviour {
 
         private Camera mainCamera;
         private ILaunchable launchable;
 
-        public static Director Create(Director prefab, ILaunchable launchable) {
-            Director director = Instantiate(prefab, Vector3.zero, START_ROTATION);
+        public static LegacyDirector Create(LegacyDirector prefab, ILaunchable launchable) {
+            LegacyDirector director = Instantiate(prefab, launchable.transform);
             director.launchable = launchable;
-            director.transform.SetParent(launchable.transform);
             director.mainCamera = Camera.main;
             director.Move();
             director.Rotate();
@@ -46,9 +42,9 @@ namespace Game.Behaviours.Directors {
             #endif
             Vector2 CirclePos = launchable.transform.position;
             float inputWorldPosX = Mathf.Clamp(mainCamera.ScreenToWorldPoint(inputPosition).x,
-                CirclePos.x - MAX_DISTANCE, CirclePos.x + MAX_DISTANCE);
+                CirclePos.x - Director.MAX_DISTANCE, CirclePos.x + Director.MAX_DISTANCE);
             float inputWorldPosY = Mathf.Clamp(mainCamera.ScreenToWorldPoint(inputPosition).y,
-                CirclePos.y - MAX_DISTANCE, CirclePos.y + MAX_DISTANCE);
+                CirclePos.y - Director.MAX_DISTANCE, CirclePos.y + Director.MAX_DISTANCE);
             transform.position = new Vector2(inputWorldPosX, inputWorldPosY);
         }
 
@@ -67,7 +63,7 @@ namespace Game.Behaviours.Directors {
         /// </summary>
         private void Scale() {
             float distance = Vector2.Distance(launchable.transform.position, transform.position);
-            transform.localScale = new Vector2(distance * SCALE_SCALE, distance * SCALE_SCALE);
+            transform.localScale = new Vector2(distance * Director.SCALE_SCALE, distance * Director.SCALE_SCALE);
         }
 
         /// <summary>
