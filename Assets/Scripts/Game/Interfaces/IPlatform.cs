@@ -1,6 +1,6 @@
 namespace Game.Interfaces {
     public interface IPlatform : IStickable {
-        int Index { get; }
+        ushort Index { get; }
         
         float ScoreMultiplier { get; }
     }

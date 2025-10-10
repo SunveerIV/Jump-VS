@@ -23,7 +23,7 @@ namespace Game.Behaviours.Managers {
 
         private float highestPlatform;
 
-        private int platformIndex = 0;
+        private ushort platformIndex = 0;
 
         public static LevelSingleplayer Create(LevelSingleplayer prefab) {
             LevelSingleplayer level = Instantiate(prefab);

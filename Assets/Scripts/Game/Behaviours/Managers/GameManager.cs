@@ -11,7 +11,8 @@ namespace Game.Behaviours.Managers {
 
         [Header("Prefabs")]
         [SerializeField] private LevelSingleplayer levelSingleplayerPrefab;
-        [SerializeField] private NetworkManager twoPlayerNetworkManagerPrefab;
+        [SerializeField] private TwoPlayerLevel twoPlayerLevelPrefab;
+        [SerializeField] private NetworkManager networkManagerPrefab;
         
         [Header("Audio")]
         [SerializeField] private AudioSource audioSource;
@@ -68,7 +69,8 @@ namespace Game.Behaviours.Managers {
                     break;
                 }
                 case GameMode.Multiplayer: {
-                    Instantiate(twoPlayerNetworkManagerPrefab);
+                    Instantiate(networkManagerPrefab);
+                    Instantiate(twoPlayerLevelPrefab);
                     break;
                 }
             }

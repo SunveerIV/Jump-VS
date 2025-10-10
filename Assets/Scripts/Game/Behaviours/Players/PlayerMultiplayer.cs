@@ -1,6 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using Unity.Netcode;
 using Game.Utility;
+using Game.UI;
 using Game.Constants;
 using Game.Behaviours.Directors;
 using Game.Behaviours.Managers;
@@ -12,6 +14,7 @@ namespace Game.Behaviours.Players {
         
         [Header("Prefabs")] 
         [SerializeField] private LineDirector lineDirectorPrefab;
+        [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
 
         [Header("Audio")] 
         [SerializeField] private AudioClip stickSound;
@@ -22,29 +25,54 @@ namespace Game.Behaviours.Players {
         [SerializeField] private Rigidbody2D rb;
         
         //Network Variables
-        public readonly NetworkVariable<bool> hasLost = new(false);
+        private readonly NetworkVariable<bool> hasLost = new(false);
+        private readonly NetworkVariable<float> score = new(0);
         
         //Cached References
+        private SingleplayerCanvas gui;
         private IStickable stickable;
+        private ILevelMultiplayer level;
+        
+        //Scoring
+        private float previousScore;
+        private int previousPlatformIndex;
+        private int cachedBounces;
         
         private bool isAttachedToPlatform;
         private float minYToRaiseCamera;
+        private bool clientInitialized;
         
-        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ulong clientID) {
+        public float Score => score.Value;
+        public bool HasLost => hasLost.Value;
+        
+        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ILevelMultiplayer level, ulong clientID) {
             PlayerMultiplayer player = Instantiate(prefab, position, Quaternion.identity);
+            player.level = level;
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientID, true);
             return player;
         }
 
         public override void OnNetworkSpawn() {
             base.OnNetworkSpawn();
+            IgnoreCollisionsWithOtherPlayers();
+            InitializeGui();
+            minYToRaiseCamera = float.MinValue;
+        }
+
+        private void IgnoreCollisionsWithOtherPlayers() {
             PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
             for (int i = 0; i < players.Length; i++) {
                 for (int j = i + 1; j < players.Length; j++) {
                     Physics2D.IgnoreCollision(players[i].GetComponent<Collider2D>(), players[j].GetComponent<Collider2D>());
                 }
             }
-            minYToRaiseCamera = float.MinValue;
+        }
+
+        private void InitializeGui() {
+            if (!IsOwner) return;
+            if (clientInitialized) return;
+            clientInitialized = true;
+            gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
         }
 
         private void Update() {
@@ -109,17 +137,64 @@ namespace Game.Behaviours.Players {
             stickable = newPlatform;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
         }
+        
+        private void UpdateScoreFields(IPlatform newPlatform) {
+            int newPlatformIndex = newPlatform.Index;
+            float xPosDifference = 1.5f - Mathf.Abs(newPlatform.transform.position.x - transform.position.x);
+            int platformDifferential = newPlatformIndex - previousPlatformIndex;
+            float newScore = score.Value;
+            
+            if (platformDifferential > 0) {
+                float bounceMultiplier = Mathf.Pow(Player.BASE_POWER_FOR_BOUNCES, cachedBounces);
+                float positionDifferenceMultiplier = Mathf.Pow(xPosDifference, Player.EXPONENT_FOR_PLATFORM_DIFFERENCE);
+                previousScore = newPlatform.ScoreMultiplier * platformDifferential * bounceMultiplier *
+                                positionDifferenceMultiplier;
+                newScore += previousScore;
+            }
+            else if (platformDifferential < 0) {
+                newScore -= previousScore;
+                previousScore = 0;
+            }
+
+            cachedBounces = 0;
+            previousPlatformIndex = newPlatformIndex;
+            
+            UpdateScoreFieldsServerRpc(newScore);
+        }
+
+        [ServerRpc]
+        private void UpdateScoreFieldsServerRpc(float newScore) {
+            score.Value = newScore;
+            level.UpdateScore();
+        }
+
+        [ClientRpc]
+        public void UpdateScoreTextClientRpc() {
+            if (!IsOwner) return;
+            StartCoroutine(WaitToUpdateScoreFelds());
+        }
+
+        private IEnumerator WaitToUpdateScoreFelds() {
+            yield return null;
+            Debug.Log("Attempting to set score on client");
+            PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
+            bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
+            float myScore = player0IsMe ? players[0].Score : players[1].Score;
+            float otherScore = player0IsMe ? players[1].Score : players[0].Score;
+            
+            gui.ScoreText = myScore - otherScore;
+        }
 
         private void OnCollisionEnter2D(Collision2D collision) {
             if (!IsOwner) return;
 
             if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
                 if (transform.position.y <= newPlatform.transform.position.y) {
-                    //cachedBounces++;
+                    cachedBounces++;
                 }
                 else if (!isAttachedToPlatform) {
                     audioSource.PlayOneShot(stickSound);
-                    //UpdateScoreFields(newPlatform);
+                    UpdateScoreFields(newPlatform);
                     StickToPlatform(newPlatform);
                 }
             }
@@ -135,7 +210,7 @@ namespace Game.Behaviours.Players {
             Debug.Log("Server Requesting Despawn");
             hasLost.Value = true;
             GetComponent<Rigidbody2D>().simulated = false;
-            FindFirstObjectByType<TwoPlayerLevel>().EndGame();
+            level.EndGame();
         }
 
         [ClientRpc]
