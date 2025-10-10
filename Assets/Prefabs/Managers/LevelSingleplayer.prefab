@@ -47,3 +47,4 @@ MonoBehaviour:
   platformSingleplayerPrefab: {fileID: 4584027319596308445, guid: 43e991d18e14840c8b648c5f8b14c895, type: 3}
   playerSingleplayerPrefab: {fileID: 2724401667519461711, guid: 30944b292ad7e4d2195c9dae87499d5f, type: 3}
   singleplayerCanvasPrefab: {fileID: -4827545123000088766, guid: 220212de1e3ad5b41837715042ec6880, type: 3}
+  killColliderPrefab: {fileID: 4082131176725640748, guid: ad485394da7e15e4f9143eed8dba464f, type: 3}

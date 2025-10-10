@@ -6,7 +6,7 @@ using Game.Behaviours.Platforms;
 using Game.Interfaces;
 
 namespace Game.Behaviours.Players {
-    public class PlayerMultiplayer : NetworkBehaviour, ILaunchable {
+    public class PlayerMultiplayer : NetworkBehaviour, IPlayer, ILaunchable {
 
         private const float VELOCITY_AMPLIFIER = 4f;
         private const float BASE_POWER_FOR_BOUNCES = 1.3f;
@@ -114,7 +114,7 @@ namespace Game.Behaviours.Players {
 
         private void OnCollisionEnter2D(Collision2D collision) {
             if (!IsOwner) return;
-            
+
             if (collision.gameObject.TryGetComponent(out PlatformMultiplayer newPlatform)) {
                 if (transform.position.y <= newPlatform.transform.position.y) {
                     //cachedBounces++;
@@ -125,11 +125,11 @@ namespace Game.Behaviours.Players {
                     StickToPlatform(newPlatform);
                 }
             }
+        }
 
-            if (collision.gameObject.CompareTag("BottomCollider")) {
-                Debug.Log("Client Requesting Despawn");
-                RequestDespawnServerRpc();
-            }
+        public void RequestDespawn() {
+            if (!IsOwner) return;
+            RequestDespawnServerRpc();
         }
         
         [ServerRpc]
