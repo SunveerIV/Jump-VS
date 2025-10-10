@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Utility;
 using Game.Settings;
 using Game.Interfaces;
 using Game.Behaviours.Platforms;
@@ -88,14 +89,14 @@ namespace Game.Behaviours.Players {
             rb.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
         }
 
-        private void StickToPlatform(PlatformSingleplayer newPlatform) {
+        private void StickToPlatform(IPlatform newPlatform) {
             rb.linearVelocity = Vector2.zero;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
             isAttachedToPlatform = true;
             stickable = newPlatform;
         }
 
-        private void UpdateScoreFields(PlatformSingleplayer newPlatform) {
+        private void UpdateScoreFields(IPlatform newPlatform) {
             int newPlatformIndex = newPlatform.Index;
             float xPosDifference = 1.5f - Mathf.Abs(newPlatform.transform.position.x - transform.position.x);
             int platformDifferential = newPlatformIndex - previousPlatformIndex;
@@ -123,21 +124,18 @@ namespace Game.Behaviours.Players {
         }
 
         private void OnCollisionEnter2D(Collision2D collision) {
-            switch (collision.gameObject.tag) {
-                case "Platform": {
-                    PlatformSingleplayer newPlatform = collision.gameObject.GetComponent<PlatformSingleplayer>();
-                    if (transform.position.y <= newPlatform.transform.position.y) {
-                        cachedBounces++;
-                    }
-                    else if (!isAttachedToPlatform) {
-                        audioSource.PlayOneShot(stickSound);
-                        UpdateScoreFields(newPlatform);
-                        StickToPlatform(newPlatform);
-                    }
-
-                    break;
+            if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
+                if (transform.position.y <= newPlatform.transform.position.y) {
+                    cachedBounces++;
                 }
-
+                else if (!isAttachedToPlatform) {
+                    audioSource.PlayOneShot(stickSound);
+                    UpdateScoreFields(newPlatform);
+                    StickToPlatform(newPlatform);
+                }
+            }
+            
+            switch (collision.gameObject.tag) {
                 case "Border": {
                     audioSource.PlayOneShot(bounceSound);
                     cachedBounces++;

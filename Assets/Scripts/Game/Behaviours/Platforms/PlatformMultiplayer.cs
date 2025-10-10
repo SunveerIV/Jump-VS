@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace Game.Behaviours.Platforms {
-    public class PlatformMultiplayer : NetworkBehaviour, IStickable {
+    public class PlatformMultiplayer : NetworkBehaviour, IPlatform {
 
         private const float PROBABILITY_OF_MOVING_PLATFORM = 0.35f;
         private const float DEFAULT_SCORE_MULTIPLIER = 1f;
