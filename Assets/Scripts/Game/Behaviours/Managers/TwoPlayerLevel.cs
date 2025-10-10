@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Game.Constants;
 using Game.Interfaces;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
@@ -9,9 +10,6 @@ using Game.Behaviours.Colliders;
 
 namespace Game.Behaviours.Managers {
     public class TwoPlayerLevel : MonoBehaviour, ILevel {
-        
-        private const float MAX_DIFFERENCE = 6f;
-        private const float PLAYER_START_Y = 1.6f;
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
@@ -36,7 +34,7 @@ namespace Game.Behaviours.Managers {
             InstantiatePlatform();
             float playerStartPosX = platforms[0].transform.position.x;
             foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds) {
-                PlayerMultiplayer player = PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, PLAYER_START_Y), clientID);
+                PlayerMultiplayer player = PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), clientID);
                 players.Add(player);
             }
 
@@ -69,7 +67,7 @@ namespace Game.Behaviours.Managers {
 
             for (int i = platforms.Count - 1; i >= 0; i--) {
                 PlatformMultiplayer platform = platforms[i];
-                if (lowestCircle - platform.transform.position.y > MAX_DIFFERENCE) {
+                if (lowestCircle - platform.transform.position.y > Level.MAX_DIFFERENCE) {
                     platforms.Remove(platform.Index);
                     platform.gameObject.GetComponent<NetworkObject>().Despawn();
                 }
@@ -77,7 +75,7 @@ namespace Game.Behaviours.Managers {
         }
         
         private void InstantiatePlatform() {
-            highestPlatform += 2f;
+            highestPlatform += Level.DISTANCE_BETWEEN_PLATFORMS;
             PlatformMultiplayer platform = PlatformMultiplayer.Create(platformMultiplayerPrefab, new Vector2(Random.Range(-2f, 2f), highestPlatform), platformIndex);
             platforms.Add(platformIndex, platform);
             platformIndex++;

@@ -1,16 +1,13 @@
-using Game.Interfaces;
-using Game.Utility;
-using Unity.Netcode;
 using UnityEngine;
+using Unity.Netcode;
+using Game.Utility;
+using Game.Constants;
+using Game.Interfaces;
 
 namespace Game.Behaviours.Platforms {
     public class PlatformMultiplayer : NetworkBehaviour, IPlatform {
 
-        private const float PROBABILITY_OF_MOVING_PLATFORM = 0.35f;
-        private const float DEFAULT_SCORE_MULTIPLIER = 1f;
-        private const float SCORE_MULTIPLIER_EXPONENT = 3f;
-        private const float MIN_VELOCITY_AMPLIFIER = 1f;
-        private const float MAX_VELOCITY_AMPLIFIER = 4f;
+        
 
         [SerializeField] private Rigidbody2D RB;
 
@@ -24,8 +21,8 @@ namespace Game.Behaviours.Platforms {
 
         public float ScoreMultiplier {
             get {
-                if (index.Value == 0) return DEFAULT_SCORE_MULTIPLIER;
-                float velocityBonus = isMovingPlatform ? Mathf.Pow(velocityAmplifier, SCORE_MULTIPLIER_EXPONENT) : DEFAULT_SCORE_MULTIPLIER;
+                if (index.Value == 0) return Platform.DEFAULT_SCORE_MULTIPLIER;
+                float velocityBonus = isMovingPlatform ? Mathf.Pow(velocityAmplifier, Platform.SCORE_MULTIPLIER_EXPONENT) : Platform.DEFAULT_SCORE_MULTIPLIER;
                 return velocityBonus;
             }
         }
@@ -33,9 +30,9 @@ namespace Game.Behaviours.Platforms {
         public static PlatformMultiplayer Create(PlatformMultiplayer prefab, Vector3 position, int index) {
             PlatformMultiplayer platform = Instantiate(prefab, position, Quaternion.identity);
             platform.index.Value = index;
-            platform.velocityAmplifier = Random.Range(MIN_VELOCITY_AMPLIFIER, MAX_VELOCITY_AMPLIFIER);
+            platform.velocityAmplifier = Random.Range(Platform.MIN_VELOCITY_AMPLIFIER, Platform.MAX_VELOCITY_AMPLIFIER);
 
-            platform.isMovingPlatform = Statistics.Probability(PROBABILITY_OF_MOVING_PLATFORM);
+            platform.isMovingPlatform = Statistics.Probability(Platform.PROBABILITY_OF_MOVING_PLATFORM);
             if (platform.isMovingPlatform) {
                 platform.direction = Statistics.FiftyPercentChance ? 1 : -1;
             }

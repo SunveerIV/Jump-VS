@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using Game.Utility;
+using Game.Constants;
 using Game.Behaviours.Directors;
 using Game.Behaviours.Managers;
 using Game.Behaviours.Platforms;
@@ -8,10 +9,6 @@ using Game.Interfaces;
 
 namespace Game.Behaviours.Players {
     public class PlayerMultiplayer : NetworkBehaviour, IPlayer, ILaunchable {
-
-        private const float VELOCITY_AMPLIFIER = 4f;
-        private const float BASE_POWER_FOR_BOUNCES = 1.3f;
-        private const float EXPONENT_FOR_PLATFORM_DIFFERENCE = 12f;
         
         [Header("Prefabs")] 
         [SerializeField] private LineDirector lineDirectorPrefab;
@@ -96,7 +93,7 @@ namespace Game.Behaviours.Players {
         [ServerRpc]
         private void LaunchServerRpc(Vector3 directorPosition) {
             stickable = null;
-            rb.linearVelocity = (directorPosition - transform.position) * VELOCITY_AMPLIFIER;
+            rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
         }
         
         private void StickToPlatform(IPlatform newPlatform) {
