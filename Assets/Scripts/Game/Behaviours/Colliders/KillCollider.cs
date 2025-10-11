@@ -1,10 +1,11 @@
 using UnityEngine;
+using Unity.Netcode;
 using Game.Utility;
 using Game.Constants;
 using Game.Interfaces;
 
 namespace Game.Behaviours.Colliders {
-    public class KillCollider : MonoBehaviour {
+    public class KillCollider : NetworkBehaviour {
         
         public static KillCollider Create(KillCollider prefab) {
             var collider = Instantiate(prefab);
