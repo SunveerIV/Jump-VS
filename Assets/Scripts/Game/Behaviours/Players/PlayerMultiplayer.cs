@@ -201,12 +201,7 @@ namespace Game.Behaviours.Players {
         }
 
         public void RequestDespawn() {
-            if (!IsOwner) return;
-            RequestDespawnServerRpc();
-        }
-        
-        [ServerRpc]
-        private void RequestDespawnServerRpc() {
+            if (!IsServer) return;
             Debug.Log("Server Requesting Despawn");
             hasLost.Value = true;
             GetComponent<Rigidbody2D>().simulated = false;
