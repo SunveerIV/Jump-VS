@@ -30,6 +30,7 @@ namespace Game.Behaviours.Players {
         
         //Cached References
         private SingleplayerCanvas gui;
+        private Camera mainCamera;
         private IStickable stickable;
         private ILevelMultiplayer level;
         
@@ -39,7 +40,7 @@ namespace Game.Behaviours.Players {
         private int cachedBounces;
         
         private bool isAttachedToPlatform;
-        private float minYToRaiseCamera;
+        private float cameraVelocityY;
         private bool clientInitialized;
         
         public float Score => score.Value;
@@ -55,8 +56,8 @@ namespace Game.Behaviours.Players {
         public override void OnNetworkSpawn() {
             base.OnNetworkSpawn();
             IgnoreCollisionsWithOtherPlayers();
+            SetCamera();
             InitializeGui();
-            minYToRaiseCamera = float.MinValue;
         }
 
         private void IgnoreCollisionsWithOtherPlayers() {
@@ -68,6 +69,12 @@ namespace Game.Behaviours.Players {
             }
         }
 
+        private void SetCamera() {
+            if (!IsOwner) return;
+            
+            mainCamera = Camera.main;
+        }
+
         private void InitializeGui() {
             if (!IsOwner) return;
             if (clientInitialized) return;
@@ -76,20 +83,18 @@ namespace Game.Behaviours.Players {
         }
 
         private void Update() {
-            RaiseCamera();
+            MoveCamera();
             InstantiateDirector();
             RemainStuckToPlatform();
         }
 
-        private void RaiseCamera() {
+        private void MoveCamera() {
             if (!IsOwner) return;
-            if (transform.position.y < minYToRaiseCamera) return;
-
-            Camera mainCamera = Camera.main;
-            minYToRaiseCamera = transform.position.y;
+            
             Vector3 currentCameraPos = mainCamera.transform.position;
-            currentCameraPos.y = transform.position.y;
-            mainCamera.transform.position = currentCameraPos;
+            float targetY = transform.position.y + 3.5f;
+            float newY = Mathf.SmoothDamp(currentCameraPos.y, targetY, ref cameraVelocityY, Player.CAMERA_SMOOTH_TIME);
+            mainCamera.transform.position = new Vector3(currentCameraPos.x, newY, currentCameraPos.z);
         }
         
         private void InstantiateDirector() {

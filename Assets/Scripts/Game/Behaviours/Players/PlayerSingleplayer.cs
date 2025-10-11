@@ -32,7 +32,7 @@ namespace Game.Behaviours.Players {
         private int cachedBounces;
 
         private bool isAttachedToPlatform;
-        private float minYToRaiseCamera;
+        private float cameraVelocityY;
 
         public float Score => score;
 
@@ -45,24 +45,21 @@ namespace Game.Behaviours.Players {
         protected void Initialize(ILevel level) {
             this.level = level;
             mainCamera = Camera.main;
-            minYToRaiseCamera = mainCamera.transform.position.y;
             isAttachedToPlatform = false;
             audioSource.volume = UserSettings.SoundEffectsVolume;
         }
 
         private void Update() {
-            RaiseCamera();
+            MoveCamera();
             InstantiateDirector();
             RemainStuckToPlatform();
         }
 
-        private void RaiseCamera() {
-            if (transform.position.y >= minYToRaiseCamera) {
-                minYToRaiseCamera = transform.position.y;
-                Vector3 currentCameraPos = mainCamera.transform.position;
-                currentCameraPos.y = transform.position.y;
-                mainCamera.transform.position = currentCameraPos;
-            }
+        private void MoveCamera() {
+            Vector3 currentCameraPos = mainCamera.transform.position;
+            float targetY = transform.position.y + 3.5f;
+            float newY = Mathf.SmoothDamp(currentCameraPos.y, targetY, ref cameraVelocityY, Player.CAMERA_SMOOTH_TIME);
+            mainCamera.transform.position = new Vector3(currentCameraPos.x, newY, currentCameraPos.z);
         }
 
         private void InstantiateDirector() {
