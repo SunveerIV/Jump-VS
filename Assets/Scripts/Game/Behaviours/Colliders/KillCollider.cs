@@ -1,13 +1,24 @@
 using UnityEngine;
 using Game.Utility;
+using Game.Constants;
 using Game.Interfaces;
 
 namespace Game.Behaviours.Colliders {
     public class KillCollider : MonoBehaviour {
         
         public static KillCollider Create(KillCollider prefab) {
-            var collider = Instantiate(prefab, Camera.main.transform);
+            var collider = Instantiate(prefab);
             return collider;
+        }
+
+        private void Update() {
+            Raise();
+        }
+
+        private void Raise() {
+            Vector3 position = transform.position;
+            position.y += Time.deltaTime * Level.RAISE_SPEED;
+            transform.position = position;
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
