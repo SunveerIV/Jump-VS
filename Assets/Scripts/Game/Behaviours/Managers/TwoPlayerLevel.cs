@@ -35,12 +35,14 @@ namespace Game.Behaviours.Managers {
             clientInitialized = true;
 
             
-            KillCollider.Create(killColliderPrefab);
+            
         }
 
         private void InitializeServer() {
             if (!IsServer) return;
             if (NetworkManager.Singleton.ConnectedClients.Count < 2) return;
+            
+            InitializeKillCollider();
             
             platforms = new Dictionary<int, PlatformMultiplayer>();
             players = new List<PlayerMultiplayer>();
@@ -52,6 +54,10 @@ namespace Game.Behaviours.Managers {
                 players.Add(player);
             }
             StartCoroutine(UpdateEverySecond());
+        }
+
+        private void InitializeKillCollider() {
+            KillCollider.Create(killColliderPrefab, true);
         }
         
         private IEnumerator UpdateEverySecond() {
