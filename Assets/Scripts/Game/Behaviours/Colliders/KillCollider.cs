@@ -7,8 +7,9 @@ using Game.Interfaces;
 namespace Game.Behaviours.Colliders {
     public class KillCollider : NetworkBehaviour {
         
-        public static KillCollider Create(KillCollider prefab) {
+        public static KillCollider Create(KillCollider prefab, bool multiplayer = false) {
             var collider = Instantiate(prefab);
+            if (multiplayer) collider.NetworkObject.Spawn();
             return collider;
         }
 
