@@ -25,8 +25,8 @@ namespace Game.Behaviours.Managers {
         }
 
         private void InitializeBorders() {
-            int startY = Mathf.RoundToInt(trackingTransform.position.y - BorderConst.RANGE_FROM_PLAYER);
-            int endY = Mathf.RoundToInt(trackingTransform.position.y + BorderConst.RANGE_FROM_PLAYER);
+            int startY = Mathf.RoundToInt(trackingTransform.position.y - BorderConst.SPRITE_MAX_RANGE_FROM_PLAYER);
+            int endY = Mathf.RoundToInt(trackingTransform.position.y + BorderConst.SPRITE_MAX_RANGE_FROM_PLAYER);
 
             for (int y = startY; y <= endY; y++) {
                 InstantiateBlock(y);
@@ -41,8 +41,8 @@ namespace Game.Behaviours.Managers {
         }
 
         private void UpdateBorderLengths() {
-            int minY = Mathf.RoundToInt(trackingTransform.position.y - BorderConst.RANGE_FROM_PLAYER);
-            int maxY = Mathf.RoundToInt(trackingTransform.position.y + BorderConst.RANGE_FROM_PLAYER);
+            int minY = Mathf.RoundToInt(trackingTransform.position.y - BorderConst.SPRITE_MAX_RANGE_FROM_PLAYER);
+            int maxY = Mathf.RoundToInt(trackingTransform.position.y + BorderConst.SPRITE_MAX_RANGE_FROM_PLAYER);
 
             // Remove blocks below range
             var below = leftBlocks.Keys.Where(y => y < minY).ToList();
@@ -65,8 +65,8 @@ namespace Game.Behaviours.Managers {
         }
 
         private void InstantiateBlock(int y) {
-            var leftBlock = Instantiate(borderSpriteObjectPrefab, new Vector3(-BorderConst.BORDER_X_POS, y, 0), Quaternion.identity, transform);
-            var rightBlock = Instantiate(borderSpriteObjectPrefab, new Vector3(BorderConst.BORDER_X_POS, y, 0), Quaternion.identity, transform);
+            var leftBlock = Instantiate(borderSpriteObjectPrefab, new Vector3(-BorderConst.SPRITE_BORDER_X_POS, y, 0), Quaternion.identity, transform);
+            var rightBlock = Instantiate(borderSpriteObjectPrefab, new Vector3(BorderConst.SPRITE_BORDER_X_POS, y, 0), Quaternion.identity, transform);
             leftBlocks[y] = leftBlock;
             rightBlocks[y] = rightBlock;
         }
