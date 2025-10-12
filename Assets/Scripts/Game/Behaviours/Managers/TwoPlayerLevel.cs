@@ -74,7 +74,14 @@ namespace Game.Behaviours.Managers {
         }
         
         private void UpdateBorders() {
-            borders.UpdateTransform(transform.position.y);
+            float minY = float.MaxValue;
+            float maxY = float.MinValue;
+            foreach (var player in players) {
+                float playerY = player.transform.position.y;
+                if (playerY < minY) minY = playerY;
+                if (playerY > maxY) maxY = playerY;
+            }
+            borders.UpdateTransform(transform.position.y, maxY - minY);
         }
         
         private void UpdatePlatforms() {
