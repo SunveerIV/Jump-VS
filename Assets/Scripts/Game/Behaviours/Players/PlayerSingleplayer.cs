@@ -1,9 +1,12 @@
+using System.Collections;
 using UnityEngine;
 using Game.Utility;
 using Game.Settings;
 using Game.Constants;
 using Game.Interfaces;
 using Game.Behaviours.Directors;
+using Game.Behaviours.Colliders;
+using Game.Behaviours.Managers;
 
 
 namespace Game.Behaviours.Players {
@@ -11,6 +14,7 @@ namespace Game.Behaviours.Players {
 
         [Header("Prefabs")] 
         [SerializeField] private LineDirector lineDirectorPrefab;
+        [SerializeField] private BorderSpriteManager borderSpriteManagerPrefab;
 
         [Header("Audio")] 
         [SerializeField] private AudioClip stickSound;
@@ -37,16 +41,13 @@ namespace Game.Behaviours.Players {
         public float Score => score;
 
         public static PlayerSingleplayer Create(PlayerSingleplayer prefab, Vector3 position, Quaternion rotation, ILevel level) {
-            PlayerSingleplayer playerSingleplayer = Instantiate(prefab, position, rotation);
-            playerSingleplayer.Initialize(level);
-            return playerSingleplayer;
-        }
-        
-        protected void Initialize(ILevel level) {
-            this.level = level;
-            mainCamera = Camera.main;
-            isAttachedToPlatform = false;
-            audioSource.volume = UserSettings.SoundEffectsVolume;
+            var player = Instantiate(prefab, position, rotation);
+            BorderSpriteManager.Create(player.borderSpriteManagerPrefab, player.transform);
+            player.level = level;
+            player.mainCamera = Camera.main;
+            player.isAttachedToPlatform = false;
+            player.audioSource.volume = UserSettings.SoundEffectsVolume;
+            return player;
         }
 
         private void Update() {
