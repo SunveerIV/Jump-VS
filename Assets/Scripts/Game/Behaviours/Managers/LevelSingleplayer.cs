@@ -15,8 +15,10 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private PlayerSingleplayer playerSingleplayerPrefab;
         [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
         [SerializeField] private KillCollider killColliderPrefab;
+        [SerializeField] private Border borderPrefab;
 
         private SingleplayerCanvas gui;
+        private Border borders;
         
         private List<PlayerSingleplayer> players;
         private List<PlatformSingleplayer> platforms;
@@ -27,27 +29,30 @@ namespace Game.Behaviours.Managers {
 
         public static LevelSingleplayer Create(LevelSingleplayer prefab) {
             LevelSingleplayer level = Instantiate(prefab);
+            KillCollider.Create(level.killColliderPrefab);
+            level.borders = Border.Create(level.borderPrefab);
+            level.gui = SingleplayerCanvas.Create(level.singleplayerCanvasPrefab);
+            level.platforms = new List<PlatformSingleplayer>();
+            level.highestPlatform = -1f;
+            level.InstantiatePlatform();
+            float playerStartPosX = level.platforms[0].transform.position.x;
+            level.players = new List<PlayerSingleplayer>();
+            PlayerSingleplayer player = PlayerSingleplayer.Create(level.playerSingleplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), Quaternion.identity, level);
+            level.players.Add(player);
+            level.StartCoroutine(level.UpdateEverySecond());
             return level;
-        }
-
-        private void Start() {
-            KillCollider.Create(killColliderPrefab);
-            gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
-            platforms = new List<PlatformSingleplayer>();
-            highestPlatform = -1f;
-            InstantiatePlatform();
-            float playerStartPosX = platforms[0].transform.position.x;
-            players = new List<PlayerSingleplayer>();
-            PlayerSingleplayer player = PlayerSingleplayer.Create(playerSingleplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), Quaternion.identity, this);
-            players.Add(player);
-            StartCoroutine(UpdateEverySecond());
         }
 
         private IEnumerator UpdateEverySecond() {
             while (true) {
+                UpdateBorders();
                 UpdatePlatforms();
                 yield return new WaitForSeconds(1);
             }
+        }
+
+        private void UpdateBorders() {
+            borders.UpdateTransform(transform.position.y, 1f);
         }
 
         private void UpdatePlatforms() {
