@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2747360477090231666
+--- !u!1 &4991670187493995016
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2747360477090231668}
-  - component: {fileID: 2747360477090231669}
+  - component: {fileID: 5652210867987642051}
+  - component: {fileID: 755930580711543303}
   m_Layer: 0
-  m_Name: LevelSingleplayer
+  m_Name: BorderSpriteManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2747360477090231668
+--- !u!4 &5652210867987642051
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2747360477090231666}
+  m_GameObject: {fileID: 4991670187493995016}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,20 +32,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2747360477090231669
+--- !u!114 &755930580711543303
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2747360477090231666}
+  m_GameObject: {fileID: 4991670187493995016}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a559c2f28068c4decbd89e79cac67a94, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f4b9f47f97e41edbfbf1d9f485012f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformSingleplayerPrefab: {fileID: 4584027319596308445, guid: 43e991d18e14840c8b648c5f8b14c895, type: 3}
-  playerSingleplayerPrefab: {fileID: 2724401667519461711, guid: 30944b292ad7e4d2195c9dae87499d5f, type: 3}
-  singleplayerCanvasPrefab: {fileID: -4827545123000088766, guid: 220212de1e3ad5b41837715042ec6880, type: 3}
-  killColliderPrefab: {fileID: 4082131176725640748, guid: ad485394da7e15e4f9143eed8dba464f, type: 3}
-  borderPrefab: {fileID: 5513641367729638516, guid: 30e1c7b38665d9f47b01f2c22870b9fd, type: 3}
+  borderSpriteObjectPrefab: {fileID: 5269218652517961330, guid: 68853c14894e300479e00cc99084fb5b, type: 3}

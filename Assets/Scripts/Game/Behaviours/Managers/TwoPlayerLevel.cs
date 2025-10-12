@@ -14,7 +14,10 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
         [SerializeField] private KillCollider killColliderPrefab;
+        [SerializeField] private Border borderPrefab;
 
+        private Border borders;
+        
         private bool clientInitialized;
 
         private Dictionary<int, PlatformMultiplayer> platforms;
@@ -33,9 +36,6 @@ namespace Game.Behaviours.Managers {
             if (!IsClient) return;
             if (clientInitialized) return;
             clientInitialized = true;
-
-            
-            
         }
 
         private void InitializeServer() {
@@ -43,6 +43,7 @@ namespace Game.Behaviours.Managers {
             if (NetworkManager.Singleton.ConnectedClients.Count < 2) return;
             
             InitializeKillCollider();
+            InitializeBorders();
             
             platforms = new Dictionary<int, PlatformMultiplayer>();
             players = new List<PlayerMultiplayer>();
@@ -59,12 +60,28 @@ namespace Game.Behaviours.Managers {
         private void InitializeKillCollider() {
             KillCollider.Create(killColliderPrefab, true);
         }
+
+        private void InitializeBorders() {
+            borders = Border.Create(borderPrefab);
+        }
         
         private IEnumerator UpdateEverySecond() {
             while (true) {
+                UpdateBorders();
                 UpdatePlatforms();
                 yield return new WaitForSeconds(1);
             }
+        }
+        
+        private void UpdateBorders() {
+            float minY = float.MaxValue;
+            float maxY = float.MinValue;
+            foreach (var player in players) {
+                float playerY = player.transform.position.y;
+                if (playerY < minY) minY = playerY;
+                if (playerY > maxY) maxY = playerY;
+            }
+            borders.UpdateTransform(transform.position.y, maxY - minY);
         }
         
         private void UpdatePlatforms() {

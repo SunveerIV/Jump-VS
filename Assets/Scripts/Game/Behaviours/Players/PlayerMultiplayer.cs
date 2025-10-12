@@ -15,6 +15,7 @@ namespace Game.Behaviours.Players {
         [Header("Prefabs")] 
         [SerializeField] private LineDirector lineDirectorPrefab;
         [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
+        [SerializeField] private BorderSpriteManager borderSpriteManagerPrefab;
 
         [Header("Audio")] 
         [SerializeField] private AudioClip stickSound;
@@ -58,6 +59,7 @@ namespace Game.Behaviours.Players {
             IgnoreCollisionsWithOtherPlayers();
             SetCamera();
             InitializeGui();
+            InitializeBorderSprite();
         }
 
         private void IgnoreCollisionsWithOtherPlayers() {
@@ -80,6 +82,11 @@ namespace Game.Behaviours.Players {
             if (clientInitialized) return;
             clientInitialized = true;
             gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
+        }
+
+        private void InitializeBorderSprite() {
+            if (!IsOwner) return;
+            BorderSpriteManager.Create(borderSpriteManagerPrefab, transform);
         }
 
         private void Update() {

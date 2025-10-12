@@ -703,6 +703,7 @@ MonoBehaviour:
   platformMultiplayerPrefab: {fileID: 1461142023510495541, guid: a655802f06aa22f4dbd219705cf52711, type: 3}
   playerMultiplayerPrefab: {fileID: 2135628697679898862, guid: eaee16bbf635bd04b920c80b91b9e371, type: 3}
   killColliderPrefab: {fileID: 4082131176725640748, guid: ad485394da7e15e4f9143eed8dba464f, type: 3}
+  borderPrefab: {fileID: 5513641367729638516, guid: 30e1c7b38665d9f47b01f2c22870b9fd, type: 3}
 --- !u!1 &4767463463399610886
 GameObject:
   m_ObjectHideFlags: 0
