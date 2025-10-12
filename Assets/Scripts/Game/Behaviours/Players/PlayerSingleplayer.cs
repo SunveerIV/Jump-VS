@@ -6,6 +6,7 @@ using Game.Constants;
 using Game.Interfaces;
 using Game.Behaviours.Directors;
 using Game.Behaviours.Colliders;
+using Game.Behaviours.Managers;
 
 
 namespace Game.Behaviours.Players {
@@ -13,6 +14,7 @@ namespace Game.Behaviours.Players {
 
         [Header("Prefabs")] 
         [SerializeField] private LineDirector lineDirectorPrefab;
+        [SerializeField] private BorderSpriteManager borderSpriteManagerPrefab;
 
         [Header("Audio")] 
         [SerializeField] private AudioClip stickSound;
@@ -40,6 +42,7 @@ namespace Game.Behaviours.Players {
 
         public static PlayerSingleplayer Create(PlayerSingleplayer prefab, Vector3 position, Quaternion rotation, ILevel level) {
             var player = Instantiate(prefab, position, rotation);
+            BorderSpriteManager.Create(player.borderSpriteManagerPrefab, player.transform);
             player.level = level;
             player.mainCamera = Camera.main;
             player.isAttachedToPlatform = false;
