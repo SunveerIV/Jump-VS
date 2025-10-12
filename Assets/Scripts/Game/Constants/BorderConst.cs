@@ -1,5 +1,5 @@
 namespace Game.Constants {
     public static class BorderConst {
-        public const float SCALE_SCALE = 5f;
+        public const float MIN_BORDER_SIZE = 50f;
     }
 }

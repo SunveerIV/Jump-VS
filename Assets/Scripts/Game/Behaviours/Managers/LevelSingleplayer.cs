@@ -52,7 +52,7 @@ namespace Game.Behaviours.Managers {
         }
 
         private void UpdateBorders() {
-            borders.UpdateTransform(transform.position.y, 1f);
+            borders.UpdateTransform(transform.position.y);
         }
 
         private void UpdatePlatforms() {

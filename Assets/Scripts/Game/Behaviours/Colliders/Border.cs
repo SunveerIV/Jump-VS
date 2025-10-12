@@ -4,29 +4,27 @@ using Game.Constants;
 
 namespace Game.Behaviours.Colliders {
     public class Border : NetworkBehaviour {
-
-        [SerializeField] private Transform masterTransform;
         
         public static Border Create(Border prefab) {
             var border = Instantiate(prefab);
             return border;
         }
 
-        public void UpdateTransform(float yPosition, float yDifference) {
+        public void UpdateTransform(float yPosition , float yDifference = 0f) {
             Move(yPosition);
             Scale(yDifference);
         }
 
         private void Move(float yPosition) {
-            Vector3 position = masterTransform.position;
+            Vector3 position = transform.position;
             position.y = yPosition;
-            masterTransform.position = position;
+            transform.position = position;
         }
 
         private void Scale(float yDifference) {
-            Vector3 scale = masterTransform.localScale;
-            scale.y = yDifference * BorderConst.SCALE_SCALE + 1f;
-            masterTransform.localScale = scale;
+            Vector3 scale = transform.localScale;
+            scale.y = Mathf.Abs(yDifference) + BorderConst.MIN_BORDER_SIZE;
+            transform.localScale = scale;
         }
     }
 }
