@@ -81,7 +81,9 @@ namespace Game.Behaviours.Managers {
                 if (playerY < minY) minY = playerY;
                 if (playerY > maxY) maxY = playerY;
             }
-            borders.UpdateTransform(transform.position.y, maxY - minY);
+
+            float averageHeight = (minY + maxY) / 2;
+            borders.UpdateTransform(averageHeight, maxY - minY);
         }
         
         private void UpdatePlatforms() {
