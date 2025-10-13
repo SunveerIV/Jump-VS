@@ -86,6 +86,7 @@ namespace Game.Behaviours.Players {
         private void StickToPlatform(IPlatform newPlatform) {
             rb.linearVelocity = Vector2.zero;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
+            rb.angularVelocity = 0f;
             isAttachedToPlatform = true;
             stickable = newPlatform;
         }
