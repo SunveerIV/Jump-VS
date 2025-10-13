@@ -143,11 +143,11 @@ namespace Game.Behaviours.Players {
 
         [ServerRpc]
         private void StickToPlatformServerRpc(int platformIndex) {
-            
             rb.linearVelocity = Vector2.zero;
             PlatformMultiplayer newPlatform = FindFirstObjectByType<TwoPlayerLevel>().GetPlatformAtIndex(platformIndex);
             stickable = newPlatform;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
+            rb.angularVelocity = 0f;
         }
         
         private void UpdateScoreFields(IPlatform newPlatform) {
