@@ -7,6 +7,12 @@ This game started as a side project, but the goals have evolved to be:
 - Create a matchmaking system 
 
 ## Getting Started 
+Run this command to clone the repository:
+
+```shell
+git clone https://github.com/SunveerIV/Jump-VS.git
+```
+
 Choose an IDE: 
 - [Visual Studio](https://visualstudio.microsoft.com/downloads/) or [JetBrains Rider](https://www.jetbrains.com/rider/) is recommended 
 - [Visual Studio Code](https://code.visualstudio.com/download) works as a lightweight option 
