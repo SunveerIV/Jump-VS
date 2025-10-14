@@ -43,7 +43,9 @@ namespace Game.Behaviours.Platforms {
         }
         
         private void Move() {
-            if (index.Value == 0 || !isMovingPlatform) return;
+            if (index.Value == 0) return;
+            if (!isMovingPlatform) return;
+            
             RB.linearVelocityX = direction * velocityAmplifier;
         }
 

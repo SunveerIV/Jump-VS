@@ -71,10 +71,10 @@ namespace Game.Behaviours.Directors {
         /// launchable is launched and Director is destroyed
         /// </summary>
         private void Delete() {
-            if (Input.GetMouseButtonUp(0)) {
-                launchable.Launch(transform.position);
-                Destroy(gameObject);
-            }
+            if (!Input.GetMouseButtonUp(0)) return;
+            
+            launchable.Launch(transform.position);
+            Destroy(gameObject);
         }
     }
 }
