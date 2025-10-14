@@ -115,15 +115,9 @@ namespace Game.Behaviours.Players {
         }
 
         private void RemainStuckToPlatform() {
-            if (!IsOwner) return;
-            
-            RemainStuckToPlatformServerRpc();
-        }
-        
-        [ServerRpc]
-        private void RemainStuckToPlatformServerRpc() {
+            if (!IsServer) return;
             if (stickable == null) return;
-            
+
             Vector3 playerPos = transform.position;
             playerPos.x = stickable.transform.position.x;
             transform.position = playerPos;
