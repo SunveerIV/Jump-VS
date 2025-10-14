@@ -80,12 +80,14 @@ namespace Game.Behaviours.Players {
         private void InitializeGui() {
             if (!IsOwner) return;
             if (clientInitialized) return;
+            
             clientInitialized = true;
             gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
         }
 
         private void InitializeBorderSprite() {
             if (!IsOwner) return;
+            
             BorderSpriteManager.Create(borderSpriteManagerPrefab, transform);
         }
 
@@ -106,13 +108,15 @@ namespace Game.Behaviours.Players {
         
         private void InstantiateDirector() {
             if (!IsOwner) return;
-            if (isAttachedToPlatform && Input.GetMouseButtonDown(0)) {
-                LineDirector.Create(lineDirectorPrefab, this);
-            }
+            if (!isAttachedToPlatform) return;
+            if (!Input.GetMouseButtonDown(0)) return;
+            
+            LineDirector.Create(lineDirectorPrefab, this);
         }
 
         private void RemainStuckToPlatform() {
             if (!IsOwner) return;
+            
             RemainStuckToPlatformServerRpc();
         }
         
@@ -183,12 +187,12 @@ namespace Game.Behaviours.Players {
         [ClientRpc]
         public void UpdateScoreTextClientRpc() {
             if (!IsOwner) return;
+            
             StartCoroutine(WaitToUpdateScoreFelds());
         }
 
         private IEnumerator WaitToUpdateScoreFelds() {
             yield return null;
-            Debug.Log("Attempting to set score on client");
             PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
             bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
             float myScore = player0IsMe ? players[0].Score : players[1].Score;
@@ -214,7 +218,7 @@ namespace Game.Behaviours.Players {
 
         public void RequestDespawn() {
             if (!IsServer) return;
-            Debug.Log("Server Requesting Despawn");
+            
             hasLost.Value = true;
             GetComponent<Rigidbody2D>().simulated = false;
             level.EndGame();
@@ -222,7 +226,6 @@ namespace Game.Behaviours.Players {
 
         [ClientRpc]
         public void EndGameClientRpc() {
-            Debug.Log("Client attempting to end game");
             SceneLoader.LoadMultiplayerEndScreen();
         }
     }

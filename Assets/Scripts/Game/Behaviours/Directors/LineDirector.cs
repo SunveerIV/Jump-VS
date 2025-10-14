@@ -39,7 +39,7 @@ namespace Game.Behaviours.Directors {
 
             for (int i = 0; i < lineLength; i++) {
                 float time = i * Director.TIME_STEP;
-                Vector3 linePointPos = startPos + startVel * time + 0.5f * (Vector3)Physics2D.gravity * time * time;
+                Vector3 linePointPos = startPos + startVel * time + (0.5f * time * time) * (Vector3)Physics2D.gravity;
                 points.Add(linePointPos);
             }
 

@@ -64,17 +64,18 @@ namespace Game.Behaviours.Players {
         }
 
         private void InstantiateDirector() {
-            if (isAttachedToPlatform && Input.GetMouseButtonDown(0)) {
-                LineDirector.Create(lineDirectorPrefab, this);
-            }
+            if (!isAttachedToPlatform) return;
+            if (!Input.GetMouseButtonDown(0)) return;
+            
+            LineDirector.Create(lineDirectorPrefab, this);
         }
 
         private void RemainStuckToPlatform() {
-            if (stickable != null) {
-                Vector3 playerPos = transform.position;
-                playerPos.x = stickable.transform.position.x;
-                transform.position = playerPos;
-            }
+            if (stickable == null) return;
+            
+            Vector3 playerPos = transform.position;
+            playerPos.x = stickable.transform.position.x;
+            transform.position = playerPos;
         }
 
         public void Launch(Vector3 directorPosition) {

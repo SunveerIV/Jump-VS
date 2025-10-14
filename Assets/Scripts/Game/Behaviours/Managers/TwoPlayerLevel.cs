@@ -137,16 +137,13 @@ namespace Game.Behaviours.Managers {
         }
 
         public void EndGame() {
-            Debug.Log("Num Players: " + players.Count);
             int activePlayers = 0;
             foreach (var player in players) {
                 activePlayers += player.HasLost ? 0 : 1;
             }
-            Debug.Log("Num active Players: " + activePlayers);
             
             if (activePlayers > 0) return;
             
-            Debug.Log("Server attempting to end game");
             foreach (var player in players) {
                 player.EndGameClientRpc();
             }
