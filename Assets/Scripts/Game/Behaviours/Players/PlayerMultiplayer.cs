@@ -27,6 +27,7 @@ namespace Game.Behaviours.Players {
         
         //Network Variables
         private readonly NetworkVariable<bool> hasLost = new(false);
+        private readonly NetworkVariable<bool> isAttatchedToPlatform = new(false);
         private readonly NetworkVariable<float> score = new(0);
         
         //Cached References
@@ -40,7 +41,6 @@ namespace Game.Behaviours.Players {
         private int previousPlatformIndex;
         private int cachedBounces;
         
-        private bool isAttachedToPlatform;
         private float cameraVelocityY;
         private bool clientInitialized;
         
@@ -108,7 +108,7 @@ namespace Game.Behaviours.Players {
         
         private void InstantiateDirector() {
             if (!IsOwner) return;
-            if (!isAttachedToPlatform) return;
+            if (!isAttatchedToPlatform.Value) return;
             if (!Input.GetMouseButtonDown(0)) return;
             
             LineDirector.Create(lineDirectorPrefab, this);
@@ -123,26 +123,18 @@ namespace Game.Behaviours.Players {
             transform.position = playerPos;
         }
         
-        public void Launch(Vector3 directorPosition) {
-            isAttachedToPlatform = false;
-            LaunchServerRpc(directorPosition);
-        }
+        public void Launch(Vector3 directorPosition) => LaunchServerRpc(directorPosition);
 
         [ServerRpc]
         private void LaunchServerRpc(Vector3 directorPosition) {
+            isAttatchedToPlatform.Value = false;
             stickable = null;
             rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
         }
         
         private void StickToPlatform(IPlatform newPlatform) {
-            isAttachedToPlatform = true;
-            StickToPlatformServerRpc(newPlatform.Index);
-        }
-
-        [ServerRpc]
-        private void StickToPlatformServerRpc(int platformIndex) {
+            isAttatchedToPlatform.Value = true;
             rb.linearVelocity = Vector2.zero;
-            PlatformMultiplayer newPlatform = FindFirstObjectByType<TwoPlayerLevel>().GetPlatformAtIndex(platformIndex);
             stickable = newPlatform;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
             rb.angularVelocity = 0f;
@@ -169,11 +161,6 @@ namespace Game.Behaviours.Players {
             cachedBounces = 0;
             previousPlatformIndex = newPlatformIndex;
             
-            UpdateScoreFieldsServerRpc(newScore);
-        }
-
-        [ServerRpc]
-        private void UpdateScoreFieldsServerRpc(float newScore) {
             score.Value = newScore;
             level.UpdateScore();
         }
@@ -196,13 +183,13 @@ namespace Game.Behaviours.Players {
         }
 
         private void OnCollisionEnter2D(Collision2D collision) {
-            if (!IsOwner) return;
+            if (!IsServer) return;
 
             if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
                 if (transform.position.y <= newPlatform.transform.position.y) {
                     cachedBounces++;
                 }
-                else if (!isAttachedToPlatform) {
+                else if (!isAttatchedToPlatform.Value) {
                     audioSource.PlayOneShot(stickSound);
                     UpdateScoreFields(newPlatform);
                     StickToPlatform(newPlatform);
@@ -223,5 +210,4 @@ namespace Game.Behaviours.Players {
             SceneLoader.LoadMultiplayerEndScreen();
         }
     }
-    
 }
