@@ -13,11 +13,6 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private LevelSingleplayer levelSingleplayerPrefab;
         [SerializeField] private TwoPlayerLevel twoPlayerLevelPrefab;
         [SerializeField] private NetworkManager networkManagerPrefab;
-        
-        [Header("Audio")]
-        [SerializeField] private AudioSource audioSource;
-        [SerializeField] private AudioClip gameMusic;
-        [SerializeField] private AudioClip failSong;
 
         private GameMode gameMode;
 
@@ -45,24 +40,16 @@ namespace Game.Behaviours.Managers {
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
             Application.targetFrameRate = 60;
-            audioSource.Stop();
-            audioSource.volume = UserSettings.MusicVolume;
 
             switch (scene.name) {
                 case "Core Game": {
                     LoadGame();
                     break;
                 }
-
-                case "Singleplayer End Screen": {
-                    PlaySong(failSong);
-                    break;
-                }
             }
         }
 
         private void LoadGame() {
-            PlaySong(gameMusic);
             switch (gameMode) {
                 case GameMode.Singleplayer: {
                     LevelSingleplayer.Create(levelSingleplayerPrefab);
@@ -74,12 +61,6 @@ namespace Game.Behaviours.Managers {
                     break;
                 }
             }
-            
-        }
-
-        private void PlaySong(AudioClip song) {
-            audioSource.PlayOneShot(song);
-            audioSource.loop = true;
         }
     }
 }
