@@ -15,11 +15,14 @@ namespace Game.UI {
         [SerializeField] private TMP_Text lobbyCodeOutputText;
         
         public async void StartHost() {
-            #if UNITY_EDITOR
+            NetworkManager networkManager = NetworkManager.Singleton;
+            UnityTransport unityTransport = networkManager.GetComponent<UnityTransport>();
             
-            NetworkManager.Singleton.StartHost();
+            if (unityTransport.Protocol == UnityTransport.ProtocolType.UnityTransport) {
+                networkManager.StartHost();
+                return;
+            }
             
-            #else
             Debug.Log("StartHost");
             await UnityServices.InitializeAsync(new InitializationOptions().SetEnvironmentName("production"));
             
@@ -29,23 +32,23 @@ namespace Game.UI {
 
             var alloc = await RelayService.Instance.CreateAllocationAsync(maxConnections);
 
-            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            transport.SetRelayServerData(AllocationUtils.ToRelayServerData(alloc, "dtls"));
+            unityTransport.SetRelayServerData(AllocationUtils.ToRelayServerData(alloc, "dtls"));
             
             string lobbyCode = await RelayService.Instance.GetJoinCodeAsync(alloc.AllocationId);
             Debug.Log(lobbyCode);
-            NetworkManager.Singleton.StartHost();
+            networkManager.StartHost();
 
             lobbyCodeOutputText.text = "Lobby Code\n" + lobbyCode;
-            #endif
         }
 
         public async void StartClient() {
-            #if UNITY_EDITOR
+            NetworkManager networkManager = NetworkManager.Singleton;
+            UnityTransport unityTransport = networkManager.GetComponent<UnityTransport>();
             
-            NetworkManager.Singleton.StartClient();
-
-            #else
+            if (unityTransport.Protocol == UnityTransport.ProtocolType.UnityTransport) {
+                networkManager.StartClient();
+                return;
+            }
             
             Debug.Log("Attempting to start client connection");
             await UnityServices.InitializeAsync(new InitializationOptions().SetEnvironmentName("production"));
@@ -58,12 +61,9 @@ namespace Game.UI {
             Debug.Log("Signed in");
             var joinAlloc = await RelayService.Instance.JoinAllocationAsync(joinCode);
             Debug.Log("Joined code");
-            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            transport.SetRelayServerData(AllocationUtils.ToRelayServerData(joinAlloc, "dtls"));
+            unityTransport.SetRelayServerData(AllocationUtils.ToRelayServerData(joinAlloc, "dtls"));
 
-            NetworkManager.Singleton.StartClient();
-
-            #endif
+            networkManager.StartClient();
         }
     }
 }
