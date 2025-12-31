@@ -30,7 +30,7 @@ namespace Game.Behaviours.Players {
         private ILevel level;
         private IStickable stickable;
 
-        private bool isAttachedToPlatform;
+        private PlayerState playerState;
         private float cameraVelocityY;
 
         public float Score => score.Value;
@@ -41,15 +41,24 @@ namespace Game.Behaviours.Players {
             player.level = level;
             player.score = new PlayerScore();
             player.mainCamera = Camera.main;
-            player.isAttachedToPlatform = false;
             player.audioSource.volume = UserSettings.SoundEffectsVolume;
             return player;
         }
 
         private void Update() {
             MoveCamera();
-            InstantiateDirector();
-            RemainStuckToPlatform();
+            
+            switch (playerState) {
+                case PlayerState.Attached: {
+                    InstantiateDirector();
+                    RemainStuckToPlatform();
+                    break;
+                }
+
+                case PlayerState.Airborne: {
+                    break;
+                }
+            }
         }
 
         private void MoveCamera() {
@@ -60,22 +69,19 @@ namespace Game.Behaviours.Players {
         }
 
         private void InstantiateDirector() {
-            if (!isAttachedToPlatform) return;
             if (!Input.GetMouseButtonDown(0)) return;
             
             LineDirector.Create(lineDirectorPrefab, this);
         }
 
         private void RemainStuckToPlatform() {
-            if (stickable == null) return;
-            
             Vector3 playerPos = transform.position;
             playerPos.x = stickable.transform.position.x;
             transform.position = playerPos;
         }
 
         public void Launch(Vector3 directorPosition) {
-            isAttachedToPlatform = false;
+            playerState = PlayerState.Airborne;
             stickable = null;
             rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
         }
@@ -84,7 +90,7 @@ namespace Game.Behaviours.Players {
             rb.linearVelocity = Vector2.zero;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
             rb.angularVelocity = 0f;
-            isAttachedToPlatform = true;
+            playerState = PlayerState.Attached;
             stickable = newPlatform;
         }
 
@@ -105,7 +111,7 @@ namespace Game.Behaviours.Players {
                 if (transform.position.y <= newPlatform.transform.position.y) {
                     score.Bounce();
                 }
-                else if (!isAttachedToPlatform) {
+                else if (playerState == PlayerState.Airborne) {
                     audioSource.PlayOneShot(stickSound);
                     UpdateScoreFields(newPlatform);
                     StickToPlatform(newPlatform);
