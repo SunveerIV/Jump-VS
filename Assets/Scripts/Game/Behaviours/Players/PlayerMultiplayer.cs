@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Unity.Netcode;
@@ -8,6 +9,7 @@ using Game.Behaviours.Directors;
 using Game.Behaviours.Managers;
 using Game.Behaviours.Platforms;
 using Game.Interfaces;
+using JumpVS.Core.Scoring;
 
 namespace Game.Behaviours.Players {
     public class PlayerMultiplayer : NetworkBehaviour, IPlayer, ILaunchable {
@@ -28,28 +30,25 @@ namespace Game.Behaviours.Players {
         //Network Variables
         private readonly NetworkVariable<bool> hasLost = new(false);
         private readonly NetworkVariable<bool> isAttatchedToPlatform = new(false);
-        private readonly NetworkVariable<float> score = new(0);
+        private readonly NetworkVariable<float> networkScore = new(0);
         
         //Cached References
         private SingleplayerCanvas gui;
         private Camera mainCamera;
+        private PlayerScore score;
         private IStickable stickable;
         private ILevelMultiplayer level;
-        
-        //Scoring
-        private float previousScore;
-        private int previousPlatformIndex;
-        private int cachedBounces;
         
         private float cameraVelocityY;
         private bool clientInitialized;
         
-        public float Score => score.Value;
+        public float Score => networkScore.Value;
         public bool HasLost => hasLost.Value;
         
         public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ILevelMultiplayer level, ulong clientID) {
             PlayerMultiplayer player = Instantiate(prefab, position, Quaternion.identity);
             player.level = level;
+            player.score = new PlayerScore();
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientID, true);
             return player;
         }
@@ -141,27 +140,11 @@ namespace Game.Behaviours.Players {
         }
         
         private void UpdateScoreFields(IPlatform newPlatform) {
-            int newPlatformIndex = newPlatform.Index;
-            float xPosDifference = 1.5f - Mathf.Abs(newPlatform.transform.position.x - transform.position.x);
-            int platformDifferential = newPlatformIndex - previousPlatformIndex;
-            float newScore = score.Value;
+            var distanceFromCenter = MathF.Abs(transform.position.x - newPlatform.transform.position.x);
+            var landEvent = new LandEvent(newPlatform.Index, distanceFromCenter, newPlatform.ScoreMultiplier);
+            score.LandOnPlatform(landEvent);
+            networkScore.Value = score.Value;
             
-            if (platformDifferential > 0) {
-                float bounceMultiplier = Mathf.Pow(Player.BASE_POWER_FOR_BOUNCES, cachedBounces);
-                float positionDifferenceMultiplier = Mathf.Pow(xPosDifference, Player.EXPONENT_FOR_PLATFORM_DIFFERENCE);
-                previousScore = newPlatform.ScoreMultiplier * platformDifferential * bounceMultiplier *
-                                positionDifferenceMultiplier;
-                newScore += previousScore;
-            }
-            else if (platformDifferential < 0) {
-                newScore -= previousScore;
-                previousScore = 0;
-            }
-
-            cachedBounces = 0;
-            previousPlatformIndex = newPlatformIndex;
-            
-            score.Value = newScore;
             level.UpdateScore();
         }
 
@@ -187,7 +170,7 @@ namespace Game.Behaviours.Players {
 
             if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
                 if (transform.position.y <= newPlatform.transform.position.y) {
-                    cachedBounces++;
+                    score.Bounce();
                 }
                 else if (!isAttatchedToPlatform.Value) {
                     audioSource.PlayOneShot(stickSound);
