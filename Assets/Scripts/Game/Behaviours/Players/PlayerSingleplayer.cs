@@ -1,12 +1,12 @@
-using System.Collections;
+using System;
 using UnityEngine;
 using Game.Utility;
 using Game.Settings;
 using Game.Constants;
 using Game.Interfaces;
 using Game.Behaviours.Directors;
-using Game.Behaviours.Colliders;
 using Game.Behaviours.Managers;
+using JumpVS.Core.Scoring;
 
 
 namespace Game.Behaviours.Players {
@@ -26,24 +26,20 @@ namespace Game.Behaviours.Players {
 
         //Cached References
         private Camera mainCamera;
+        private PlayerScore score;
         private ILevel level;
         private IStickable stickable;
-
-        //Scoring
-        private float score;
-        private float previousScore;
-        private int previousPlatformIndex;
-        private int cachedBounces;
 
         private bool isAttachedToPlatform;
         private float cameraVelocityY;
 
-        public float Score => score;
+        public float Score => score.Value;
 
         public static PlayerSingleplayer Create(PlayerSingleplayer prefab, Vector3 position, Quaternion rotation, ILevel level) {
             var player = Instantiate(prefab, position, rotation);
             BorderSpriteManager.Create(player.borderSpriteManagerPrefab, player.transform);
             player.level = level;
+            player.score = new PlayerScore();
             player.mainCamera = Camera.main;
             player.isAttachedToPlatform = false;
             player.audioSource.volume = UserSettings.SoundEffectsVolume;
@@ -93,25 +89,10 @@ namespace Game.Behaviours.Players {
         }
 
         private void UpdateScoreFields(IPlatform newPlatform) {
-            int newPlatformIndex = newPlatform.Index;
-            float xPosDifference = 1.5f - Mathf.Abs(newPlatform.transform.position.x - transform.position.x);
-            int platformDifferential = newPlatformIndex - previousPlatformIndex;
-
-            if (platformDifferential > 0) {
-                float bounceMultiplier = Mathf.Pow(Player.BASE_POWER_FOR_BOUNCES, cachedBounces);
-                float positionDifferenceMultiplier = Mathf.Pow(xPosDifference, Player.EXPONENT_FOR_PLATFORM_DIFFERENCE);
-                previousScore = newPlatform.ScoreMultiplier * platformDifferential * bounceMultiplier *
-                                positionDifferenceMultiplier;
-                score += previousScore;
-            }
-            else if (platformDifferential < 0) {
-                score -= previousScore;
-                previousScore = 0;
-            }
-
-            cachedBounces = 0;
-            previousPlatformIndex = newPlatformIndex;
-
+            var distanceFromCenter = MathF.Abs(transform.position.x - newPlatform.transform.position.x);
+            var landEvent = new LandEvent(newPlatform.Index, distanceFromCenter, newPlatform.ScoreMultiplier);
+            score.LandOnPlatform(landEvent);
+            
             level.UpdateScore();
         }
 
@@ -122,7 +103,7 @@ namespace Game.Behaviours.Players {
         private void OnCollisionEnter2D(Collision2D collision) {
             if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
                 if (transform.position.y <= newPlatform.transform.position.y) {
-                    cachedBounces++;
+                    score.Bounce();
                 }
                 else if (!isAttachedToPlatform) {
                     audioSource.PlayOneShot(stickSound);
@@ -134,7 +115,7 @@ namespace Game.Behaviours.Players {
             switch (collision.gameObject.tag) {
                 case "Border": {
                     audioSource.PlayOneShot(bounceSound);
-                    cachedBounces++;
+                    score.Bounce();
                     break;
                 }
             }
