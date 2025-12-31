@@ -1,5 +1,5 @@
 namespace Game.Behaviours.Players {
-    public enum PlayerState {
+    public enum PlayerState : byte {
         Airborne,
         Attached
     }
