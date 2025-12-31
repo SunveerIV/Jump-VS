@@ -28,8 +28,8 @@ namespace Game.Behaviours.Players {
         [SerializeField] private Rigidbody2D rb;
         
         //Network Variables
+        private readonly NetworkVariable<PlayerState> playerState = new();
         private readonly NetworkVariable<bool> hasLost = new(false);
-        private readonly NetworkVariable<bool> isAttatchedToPlatform = new(false);
         private readonly NetworkVariable<float> networkScore = new(0);
         
         //Cached References
@@ -92,8 +92,18 @@ namespace Game.Behaviours.Players {
 
         private void Update() {
             MoveCamera();
-            InstantiateDirector();
-            RemainStuckToPlatform();
+            
+            switch (playerState.Value) {
+                case PlayerState.Attached: {
+                    InstantiateDirector();
+                    RemainStuckToPlatform();
+                    break;
+                }
+
+                case PlayerState.Airborne: {
+                    break;
+                }
+            }
         }
 
         private void MoveCamera() {
@@ -107,7 +117,6 @@ namespace Game.Behaviours.Players {
         
         private void InstantiateDirector() {
             if (!IsOwner) return;
-            if (!isAttatchedToPlatform.Value) return;
             if (!Input.GetMouseButtonDown(0)) return;
             
             LineDirector.Create(lineDirectorPrefab, this);
@@ -115,7 +124,6 @@ namespace Game.Behaviours.Players {
 
         private void RemainStuckToPlatform() {
             if (!IsServer) return;
-            if (stickable == null) return;
 
             Vector3 playerPos = transform.position;
             playerPos.x = stickable.transform.position.x;
@@ -126,13 +134,13 @@ namespace Game.Behaviours.Players {
 
         [ServerRpc]
         private void LaunchServerRpc(Vector3 directorPosition) {
-            isAttatchedToPlatform.Value = false;
+            playerState.Value = PlayerState.Airborne;
             stickable = null;
             rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
         }
         
         private void StickToPlatform(IPlatform newPlatform) {
-            isAttatchedToPlatform.Value = true;
+            playerState.Value = PlayerState.Attached;
             rb.linearVelocity = Vector2.zero;
             stickable = newPlatform;
             transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
@@ -172,7 +180,7 @@ namespace Game.Behaviours.Players {
                 if (transform.position.y <= newPlatform.transform.position.y) {
                     score.Bounce();
                 }
-                else if (!isAttatchedToPlatform.Value) {
+                else if (playerState.Value == PlayerState.Airborne) {
                     audioSource.PlayOneShot(stickSound);
                     UpdateScoreFields(newPlatform);
                     StickToPlatform(newPlatform);
