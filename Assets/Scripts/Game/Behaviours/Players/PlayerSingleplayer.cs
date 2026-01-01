@@ -82,7 +82,6 @@ namespace Game.Behaviours.Players {
 
         public void Launch(Vector3 directorPosition) {
             playerState = PlayerState.Airborne;
-            stickable = null;
             rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
         }
 

@@ -135,7 +135,6 @@ namespace Game.Behaviours.Players {
         [ServerRpc]
         private void LaunchServerRpc(Vector3 directorPosition) {
             playerState.Value = PlayerState.Airborne;
-            stickable = null;
             rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
         }
         
