@@ -1,8 +1,11 @@
 using System;
-using Game.Constants;
 
 namespace JumpVS.Core.Scoring {
     public sealed class PlayerScore {
+        private const float HALF_PLATFORM_WIDTH = 1.5f;
+        private const float BASE_POWER_FOR_BOUNCES = 1.3f;
+        private const float EXPONENT_FOR_PLATFORM_DIFFERENCE = 12f;
+        
         private int cachedBounces;
         private int previousPlatformIndex;
         private float previousScore;
@@ -21,13 +24,13 @@ namespace JumpVS.Core.Scoring {
         }
 
         public void LandOnPlatform(LandEvent landEvent) {
-            float xPosDifference = 1.5f - landEvent.DistanceFromCenter;
+            float xPosDifference = HALF_PLATFORM_WIDTH - landEvent.DistanceFromCenter;
             int platformDifferential = landEvent.NewPlatformIndex - previousPlatformIndex;
             previousPlatformIndex = landEvent.NewPlatformIndex;
 
             if (platformDifferential > 0) {
-                float bounceMultiplier = MathF.Pow(Player.BASE_POWER_FOR_BOUNCES, cachedBounces);
-                float positionDifferenceMultiplier = MathF.Pow(xPosDifference, Player.EXPONENT_FOR_PLATFORM_DIFFERENCE);
+                float bounceMultiplier = MathF.Pow(BASE_POWER_FOR_BOUNCES, cachedBounces);
+                float positionDifferenceMultiplier = MathF.Pow(xPosDifference, EXPONENT_FOR_PLATFORM_DIFFERENCE);
                 previousScore = landEvent.NewPlatformScoreMultiplier * platformDifferential * bounceMultiplier *
                                 positionDifferenceMultiplier;
                 Value += previousScore;
