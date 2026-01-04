@@ -8,8 +8,9 @@ namespace Game.Behaviours.Platforms {
 
         [SerializeField] private Rigidbody2D RB;
 
+        private PlatformType platformType;
+        
         private float velocityAmplifier;
-        private bool isMovingPlatform;
         private int direction;
         private ushort index;
 
@@ -18,7 +19,7 @@ namespace Game.Behaviours.Platforms {
         public float ScoreMultiplier {
             get {
                 if (index == 0) return Platform.DEFAULT_SCORE_MULTIPLIER;
-                float velocityBonus = isMovingPlatform ? Mathf.Pow(velocityAmplifier, Platform.SCORE_MULTIPLIER_EXPONENT) : Platform.DEFAULT_SCORE_MULTIPLIER;
+                float velocityBonus = platformType == PlatformType.Moving ? Mathf.Pow(velocityAmplifier, Platform.SCORE_MULTIPLIER_EXPONENT) : Platform.DEFAULT_SCORE_MULTIPLIER;
                 return velocityBonus;
             }
         }
@@ -28,18 +29,17 @@ namespace Game.Behaviours.Platforms {
             platform.index = index;
             platform.velocityAmplifier = Random.Range(Platform.MIN_VELOCITY_AMPLIFIER, Platform.MAX_VELOCITY_AMPLIFIER);
 
-            platform.isMovingPlatform = Statistics.Probability(Platform.PROBABILITY_OF_MOVING_PLATFORM);
-            if (platform.isMovingPlatform) {
+            platform.platformType = Statistics.Probability(Platform.PROBABILITY_OF_MOVING_PLATFORM) && index > 0 ? PlatformType.Moving : PlatformType.Stationary;
+            if (platform.platformType == PlatformType.Moving) {
                 platform.direction = Statistics.FiftyPercentChance ? 1 : -1;
+                platform.Move();
             }
 
-            platform.Move();
             return platform;
         }
 
         private void Move() {
-            if (index == 0) return;
-            if (!isMovingPlatform) return;
+            if (platformType == PlatformType.Stationary) return;
             
             RB.linearVelocityX = direction * velocityAmplifier;
         }
