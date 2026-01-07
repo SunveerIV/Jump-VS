@@ -137,23 +137,6 @@ namespace Game.Behaviours.Players {
             playerState.Value = PlayerState.Airborne;
             rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
         }
-        
-        private void StickToPlatform(IPlatform newPlatform) {
-            playerState.Value = PlayerState.Attached;
-            rb.linearVelocity = Vector2.zero;
-            stickable = newPlatform;
-            transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
-            rb.angularVelocity = 0f;
-        }
-        
-        private void UpdateScoreFields(IPlatform newPlatform) {
-            var distanceFromCenter = MathF.Abs(transform.position.x - newPlatform.transform.position.x);
-            var landEvent = new LandEvent(newPlatform.Index, distanceFromCenter, newPlatform.ScoreMultiplier);
-            score.LandOnPlatform(landEvent);
-            networkScore.Value = score.Value;
-            
-            level.UpdateScore();
-        }
 
         [ClientRpc]
         public void UpdateScoreTextClientRpc() {
@@ -172,18 +155,32 @@ namespace Game.Behaviours.Players {
             gui.ScoreText = myScore - otherScore;
         }
 
+        private void CollideWithPlatform(IPlatform newPlatform) {
+            if (transform.position.y <= newPlatform.transform.position.y) {
+                score.Bounce();
+            }
+            else if (playerState.Value == PlayerState.Airborne) {
+                audioSource.PlayOneShot(stickSound);
+                var distanceFromCenter = MathF.Abs(transform.position.x - newPlatform.transform.position.x);
+                var landEvent = new LandEvent(newPlatform.Index, distanceFromCenter, newPlatform.ScoreMultiplier);
+                score.LandOnPlatform(landEvent);
+                networkScore.Value = score.Value;
+            
+                rb.linearVelocity = Vector2.zero;
+                transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
+                rb.angularVelocity = 0f;
+                playerState.Value = PlayerState.Attached;
+                stickable = newPlatform;
+                
+                level.UpdateScore();
+            }
+        }
+
         private void OnCollisionEnter2D(Collision2D collision) {
             if (!IsServer) return;
 
             if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
-                if (transform.position.y <= newPlatform.transform.position.y) {
-                    score.Bounce();
-                }
-                else if (playerState.Value == PlayerState.Airborne) {
-                    audioSource.PlayOneShot(stickSound);
-                    UpdateScoreFields(newPlatform);
-                    StickToPlatform(newPlatform);
-                }
+                CollideWithPlatform(newPlatform);
             }
         }
 

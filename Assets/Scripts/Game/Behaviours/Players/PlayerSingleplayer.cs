@@ -85,20 +85,24 @@ namespace Game.Behaviours.Players {
             rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
         }
 
-        private void StickToPlatform(IPlatform newPlatform) {
-            rb.linearVelocity = Vector2.zero;
-            transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
-            rb.angularVelocity = 0f;
-            playerState = PlayerState.Attached;
-            stickable = newPlatform;
-        }
-
-        private void UpdateScoreFields(IPlatform newPlatform) {
-            var distanceFromCenter = MathF.Abs(transform.position.x - newPlatform.transform.position.x);
-            var landEvent = new LandEvent(newPlatform.Index, distanceFromCenter, newPlatform.ScoreMultiplier);
-            score.LandOnPlatform(landEvent);
-            
-            level.UpdateScore();
+        private void CollideWithPlatform(IPlatform newPlatform) {
+            if (transform.position.y <= newPlatform.transform.position.y) {
+                score.Bounce();
+            }
+            else if (playerState == PlayerState.Airborne) {
+                audioSource.PlayOneShot(stickSound);
+                var distanceFromCenter = MathF.Abs(transform.position.x - newPlatform.transform.position.x);
+                var landEvent = new LandEvent(newPlatform.Index, distanceFromCenter, newPlatform.ScoreMultiplier);
+                score.LandOnPlatform(landEvent);
+                
+                rb.linearVelocity = Vector2.zero;
+                transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
+                rb.angularVelocity = 0f;
+                playerState = PlayerState.Attached;
+                stickable = newPlatform;
+                
+                level.UpdateScore();
+            }
         }
 
         public void RequestDespawn() {
@@ -107,14 +111,7 @@ namespace Game.Behaviours.Players {
 
         private void OnCollisionEnter2D(Collision2D collision) {
             if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
-                if (transform.position.y <= newPlatform.transform.position.y) {
-                    score.Bounce();
-                }
-                else if (playerState == PlayerState.Airborne) {
-                    audioSource.PlayOneShot(stickSound);
-                    UpdateScoreFields(newPlatform);
-                    StickToPlatform(newPlatform);
-                }
+                CollideWithPlatform(newPlatform);
             }
             
             switch (collision.gameObject.tag) {
