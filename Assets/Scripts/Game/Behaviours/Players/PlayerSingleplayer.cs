@@ -105,13 +105,17 @@ namespace Game.Behaviours.Players {
             }
         }
 
-        public void RequestDespawn() {
+        public void CollideWithKillCollider() {
             level.EndGame();
         }
 
         private void OnCollisionEnter2D(Collision2D collision) {
             if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
                 CollideWithPlatform(newPlatform);
+            }
+
+            if (Tools.TryGetInterface(collision.gameObject, out IKillCollider ignored)) {
+                CollideWithKillCollider();
             }
             
             switch (collision.gameObject.tag) {
