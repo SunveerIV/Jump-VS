@@ -84,6 +84,7 @@ GameObject:
   - component: {fileID: 4373072730384974779}
   - component: {fileID: 598132113900590889}
   - component: {fileID: 3454613842304325666}
+  - component: {fileID: 6981511428034531881}
   m_Layer: 0
   m_Name: RightBorder
   m_TagString: Border
@@ -179,6 +180,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 7
+--- !u!114 &6981511428034531881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8268239311565642367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f0376c3f3b419daab30958b9a0d89b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8901695530366230229
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,6 +203,7 @@ GameObject:
   - component: {fileID: 2068086704273205739}
   - component: {fileID: 5671506279161531420}
   - component: {fileID: 8099828665858070102}
+  - component: {fileID: 9063848664366214682}
   m_Layer: 0
   m_Name: LeftBorder
   m_TagString: Border
@@ -285,3 +299,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 7
+--- !u!114 &9063848664366214682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8901695530366230229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f0376c3f3b419daab30958b9a0d89b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -14,9 +14,9 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
         [SerializeField] private KillCollider killColliderPrefab;
-        [SerializeField] private Border borderPrefab;
+        [SerializeField] private BorderManager borderPrefab;
 
-        private Border borders;
+        private BorderManager borders;
         
         private bool clientInitialized;
 
@@ -62,7 +62,7 @@ namespace Game.Behaviours.Managers {
         }
 
         private void InitializeBorders() {
-            borders = Border.Create(borderPrefab);
+            borders = BorderManager.Create(borderPrefab);
         }
         
         private IEnumerator UpdateEverySecond() {

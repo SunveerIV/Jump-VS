@@ -105,7 +105,7 @@ namespace Game.Behaviours.Players {
             }
         }
 
-        public void RequestDespawn() {
+        public void CollideWithKillCollider() {
             level.EndGame();
         }
 
@@ -113,13 +113,14 @@ namespace Game.Behaviours.Players {
             if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
                 CollideWithPlatform(newPlatform);
             }
-            
-            switch (collision.gameObject.tag) {
-                case "Border": {
-                    audioSource.PlayOneShot(bounceSound);
-                    score.Bounce();
-                    break;
-                }
+
+            if (Tools.TryGetInterface(collision.gameObject, out IKillCollider killCollider)) {
+                CollideWithKillCollider();
+            }
+
+            if (Tools.TryGetInterface(collision.gameObject, out IBorder border)) {
+                audioSource.PlayOneShot(bounceSound);
+                score.Bounce();
             }
         }
     }

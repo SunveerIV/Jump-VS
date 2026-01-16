@@ -182,9 +182,17 @@ namespace Game.Behaviours.Players {
             if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
                 CollideWithPlatform(newPlatform);
             }
+
+            if (Tools.TryGetInterface(collision.gameObject, out IKillCollider killCollider)) {
+                CollideWithKillCollider();
+            }
+
+            if (Tools.TryGetInterface(collision.gameObject, out IBorder border)) {
+                score.Bounce();
+            }
         }
 
-        public void RequestDespawn() {
+        public void CollideWithKillCollider() {
             if (!IsServer) return;
             
             hasLost.Value = true;

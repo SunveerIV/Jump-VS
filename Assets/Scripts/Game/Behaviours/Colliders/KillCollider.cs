@@ -5,7 +5,7 @@ using Game.Constants;
 using Game.Interfaces;
 
 namespace Game.Behaviours.Colliders {
-    public class KillCollider : NetworkBehaviour {
+    public class KillCollider : NetworkBehaviour, IKillCollider {
         
         public static KillCollider Create(KillCollider prefab, bool multiplayer = false) {
             var collider = Instantiate(prefab);
@@ -21,12 +21,6 @@ namespace Game.Behaviours.Colliders {
             Vector3 position = transform.position;
             position.y += Time.deltaTime * Level.RAISE_SPEED;
             transform.position = position;
-        }
-
-        private void OnTriggerEnter2D(Collider2D other) {
-            if (Tools.TryGetInterface(other.gameObject, out IPlayer player)) {
-                player.RequestDespawn();
-            }
         }
     }
 }
