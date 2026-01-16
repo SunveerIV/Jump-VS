@@ -114,16 +114,13 @@ namespace Game.Behaviours.Players {
                 CollideWithPlatform(newPlatform);
             }
 
-            if (Tools.TryGetInterface(collision.gameObject, out IKillCollider ignored)) {
+            if (Tools.TryGetInterface(collision.gameObject, out IKillCollider killCollider)) {
                 CollideWithKillCollider();
             }
-            
-            switch (collision.gameObject.tag) {
-                case "Border": {
-                    audioSource.PlayOneShot(bounceSound);
-                    score.Bounce();
-                    break;
-                }
+
+            if (Tools.TryGetInterface(collision.gameObject, out IBorder border)) {
+                audioSource.PlayOneShot(bounceSound);
+                score.Bounce();
             }
         }
     }

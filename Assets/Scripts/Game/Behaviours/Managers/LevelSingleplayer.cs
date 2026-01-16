@@ -15,10 +15,10 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private PlayerSingleplayer playerSingleplayerPrefab;
         [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
         [SerializeField] private KillCollider killColliderPrefab;
-        [SerializeField] private Border borderPrefab;
+        [SerializeField] private BorderManager borderPrefab;
 
         private SingleplayerCanvas gui;
-        private Border borders;
+        private BorderManager borders;
         
         private List<PlayerSingleplayer> players;
         private List<PlatformSingleplayer> platforms;
@@ -30,7 +30,7 @@ namespace Game.Behaviours.Managers {
         public static LevelSingleplayer Create(LevelSingleplayer prefab) {
             LevelSingleplayer level = Instantiate(prefab);
             KillCollider.Create(level.killColliderPrefab);
-            level.borders = Border.Create(level.borderPrefab);
+            level.borders = BorderManager.Create(level.borderPrefab);
             level.gui = SingleplayerCanvas.Create(level.singleplayerCanvasPrefab);
             level.platforms = new List<PlatformSingleplayer>();
             level.highestPlatform = -1f;

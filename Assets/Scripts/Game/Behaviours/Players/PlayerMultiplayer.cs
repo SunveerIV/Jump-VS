@@ -183,8 +183,12 @@ namespace Game.Behaviours.Players {
                 CollideWithPlatform(newPlatform);
             }
 
-            if (Tools.TryGetInterface(collision.gameObject, out IKillCollider ignored)) {
+            if (Tools.TryGetInterface(collision.gameObject, out IKillCollider killCollider)) {
                 CollideWithKillCollider();
+            }
+
+            if (Tools.TryGetInterface(collision.gameObject, out IBorder border)) {
+                score.Bounce();
             }
         }
 
