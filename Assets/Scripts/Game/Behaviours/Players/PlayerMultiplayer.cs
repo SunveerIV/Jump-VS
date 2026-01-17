@@ -49,7 +49,7 @@ namespace Game.Behaviours.Players {
             PlayerMultiplayer player = Instantiate(prefab, position, Quaternion.identity);
             player.level = level;
             player.score = new PlayerScore();
-            player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientID, true);
+            player.NetworkObject.SpawnAsPlayerObject(clientID, true);
             return player;
         }
 
@@ -196,7 +196,7 @@ namespace Game.Behaviours.Players {
             if (!IsServer) return;
             
             hasLost.Value = true;
-            GetComponent<Rigidbody2D>().simulated = false;
+            rb.simulated = false;
             level.EndGame();
         }
 
