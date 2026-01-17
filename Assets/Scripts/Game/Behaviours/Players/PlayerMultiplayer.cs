@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using Game.Utility;
 using Game.UI;
+using Game.Settings;
 using Game.Constants;
 using Game.Behaviours.Directors;
 using Game.Behaviours.Managers;
@@ -59,6 +60,7 @@ namespace Game.Behaviours.Players {
             SetCamera();
             InitializeGui();
             InitializeBorderSprite();
+            InitializeAudioSource();
         }
 
         private void IgnoreCollisionsWithOtherPlayers() {
@@ -88,6 +90,12 @@ namespace Game.Behaviours.Players {
             if (!IsOwner) return;
             
             BorderSpriteManager.Create(borderSpriteManagerPrefab, transform);
+        }
+
+        private void InitializeAudioSource() {
+            if (!IsOwner) return;
+            
+            audioSource.volume = UserSettings.SoundEffectsVolume;
         }
 
         private void Update() {
@@ -160,7 +168,7 @@ namespace Game.Behaviours.Players {
                 score.Bounce();
             }
             else if (playerState.Value == PlayerState.Airborne) {
-                audioSource.PlayOneShot(stickSound);
+                PlayStickSoundClientRpc();
                 var distanceFromCenter = MathF.Abs(transform.position.x - newPlatform.transform.position.x);
                 var landEvent = new LandEvent(newPlatform.Index, distanceFromCenter, newPlatform.ScoreMultiplier);
                 score.LandOnPlatform(landEvent);
@@ -189,7 +197,22 @@ namespace Game.Behaviours.Players {
 
             if (Tools.TryGetInterface(collision.gameObject, out IBorder border)) {
                 score.Bounce();
+                PlayBounceSoundClientRpc();
             }
+        }
+
+        [ClientRpc]
+        private void PlayBounceSoundClientRpc() {
+            if (!IsOwner) return;
+            
+            audioSource.PlayOneShot(bounceSound);
+        }
+
+        [ClientRpc]
+        private void PlayStickSoundClientRpc() {
+            if (!IsOwner) return;
+            
+            audioSource.PlayOneShot(stickSound);
         }
 
         public void CollideWithKillCollider() {
