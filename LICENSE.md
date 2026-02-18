@@ -1,4 +1,4 @@
-Copyright (c) 2025 Sunveer Minhas.
+Copyright (c) 2025 - 2026 Sunveer Minhas.
 
 All rights reserved.
 
