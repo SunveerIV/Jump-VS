@@ -27,7 +27,7 @@ Download Unity Tools:
 
 ## Platforms 
 - iOS is the primary target platform. 
-- The Windows build target exists for testing purposes only. 
+- Android support is planned for the future.
 
 ## Security 
 The following information has been excluded from the repository for security reasons: 
