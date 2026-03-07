@@ -5,5 +5,6 @@ namespace Game.Constants {
         public const float SCORE_MULTIPLIER_EXPONENT = 3f;
         public const float MIN_VELOCITY_AMPLIFIER = 1f;
         public const float MAX_VELOCITY_AMPLIFIER = 4f;
+        public const float OBJECT_HEIGHT = 0.3712008f;
     }
 }

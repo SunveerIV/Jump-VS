@@ -28,7 +28,6 @@ namespace Game.Behaviours.Players {
         private Camera mainCamera;
         private PlayerScore score;
         private ILevel level;
-        private IStickable stickable;
 
         private PlayerState playerState;
         private float cameraVelocityY;
@@ -51,7 +50,6 @@ namespace Game.Behaviours.Players {
             switch (playerState) {
                 case PlayerState.Attached: {
                     InstantiateDirector();
-                    RemainStuckToPlatform();
                     break;
                 }
 
@@ -74,32 +72,28 @@ namespace Game.Behaviours.Players {
             LineDirector.Create(lineDirectorPrefab, this);
         }
 
-        private void RemainStuckToPlatform() {
-            Vector3 playerPos = transform.position;
-            playerPos.x = stickable.transform.position.x;
-            transform.position = playerPos;
-        }
-
         public void Launch(Vector3 directorPosition) {
-            playerState = PlayerState.Airborne;
+            this.Unstick();
             rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
+            playerState =  PlayerState.Airborne;
         }
 
         private void CollideWithPlatform(IPlatform newPlatform) {
-            if (transform.position.y <= newPlatform.transform.position.y) {
+            if (transform.position.y <= newPlatform.gameObject.transform.position.y) {
                 score.Bounce();
             }
             else if (playerState == PlayerState.Airborne) {
                 audioSource.PlayOneShot(stickSound);
-                var distanceFromCenter = MathF.Abs(transform.position.x - newPlatform.transform.position.x);
+                var distanceFromCenter = MathF.Abs(transform.position.x - newPlatform.gameObject.transform.position.x);
                 var landEvent = new LandEvent(newPlatform.Index, distanceFromCenter, newPlatform.ScoreMultiplier);
                 score.LandOnPlatform(landEvent);
                 
                 rb.linearVelocity = Vector2.zero;
-                transform.position = new Vector2(newPlatform.transform.position.x, newPlatform.transform.position.y + 0.2f);
                 rb.angularVelocity = 0f;
+                float yDelta = (Player.OBJECT_HEIGHT + Platform.OBJECT_HEIGHT) / 2f;
+                transform.position = new Vector2(newPlatform.gameObject.transform.position.x, newPlatform.gameObject.transform.position.y + yDelta);
+                this.StickTo(newPlatform.gameObject);
                 playerState = PlayerState.Attached;
-                stickable = newPlatform;
                 
                 level.UpdateScore();
             }
