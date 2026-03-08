@@ -37,7 +37,7 @@ namespace Game.Behaviours.Platforms {
                 platform.direction = Statistics.FiftyPercentChance ? 1 : -1;
             }
 
-            platform.GetComponent<NetworkObject>().Spawn();
+            platform.NetworkObject.Spawn();
             platform.Move();
             return platform;
         }

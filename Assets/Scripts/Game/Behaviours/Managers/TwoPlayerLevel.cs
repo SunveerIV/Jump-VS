@@ -107,7 +107,7 @@ namespace Game.Behaviours.Managers {
                 PlatformMultiplayer platform = platforms[i];
                 if (lowestCircle - platform.transform.position.y > Level.MAX_DIFFERENCE) {
                     platforms.Remove(platform.Index);
-                    platform.gameObject.GetComponent<NetworkObject>().Despawn();
+                    platform.NetworkObject.Despawn();
                 }
             }
         }
