@@ -176,21 +176,17 @@ namespace Game.Behaviours.Players {
             }
         }
 
+        private void CollideWithBorder() {
+            score.Bounce();
+            PlayBounceSoundClientRpc();
+        }
+
         private void OnCollisionEnter2D(Collision2D collision) {
             if (!IsServer) return;
 
-            if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
-                CollideWithPlatform(newPlatform);
-            }
-
-            if (Tools.TryGetInterface(collision.gameObject, out IKillCollider killCollider)) {
-                CollideWithKillCollider();
-            }
-
-            if (Tools.TryGetInterface(collision.gameObject, out IBorder border)) {
-                score.Bounce();
-                PlayBounceSoundClientRpc();
-            }
+            if (collision.TryGetInterface(out IPlatform newPlatform)) CollideWithPlatform(newPlatform);
+            if (collision.TryGetInterface(out IKillCollider killCollider)) CollideWithKillCollider();
+            if (collision.TryGetInterface(out IBorder border)) CollideWithBorder();
         }
 
         [ClientRpc]
@@ -207,7 +203,7 @@ namespace Game.Behaviours.Players {
             audioSource.PlayOneShot(stickSound);
         }
 
-        public void CollideWithKillCollider() {
+        private void CollideWithKillCollider() {
             if (!IsServer) return;
             
             hasLost.Value = true;

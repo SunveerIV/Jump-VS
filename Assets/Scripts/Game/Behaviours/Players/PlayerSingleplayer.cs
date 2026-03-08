@@ -99,23 +99,19 @@ namespace Game.Behaviours.Players {
             }
         }
 
-        public void CollideWithKillCollider() {
+        private void CollideWithKillCollider() {
             level.EndGame();
         }
 
+        private void CollideWithBorder() {
+            audioSource.PlayOneShot(bounceSound);
+            score.Bounce();
+        }
+
         private void OnCollisionEnter2D(Collision2D collision) {
-            if (Tools.TryGetInterface(collision.gameObject, out IPlatform newPlatform)) {
-                CollideWithPlatform(newPlatform);
-            }
-
-            if (Tools.TryGetInterface(collision.gameObject, out IKillCollider killCollider)) {
-                CollideWithKillCollider();
-            }
-
-            if (Tools.TryGetInterface(collision.gameObject, out IBorder border)) {
-                audioSource.PlayOneShot(bounceSound);
-                score.Bounce();
-            }
+            if (collision.TryGetInterface(out IPlatform newPlatform)) CollideWithPlatform(newPlatform);
+            if (collision.TryGetInterface(out IKillCollider killCollider)) CollideWithKillCollider();
+            if (collision.TryGetInterface(out IBorder border)) CollideWithBorder();
         }
     }
 }
