@@ -141,17 +141,14 @@ namespace Game.Behaviours.Players {
         public void UpdateScoreTextClientRpc() {
             if (!IsOwner) return;
             
-            StartCoroutine(WaitToUpdateScoreFelds());
-        }
-
-        private IEnumerator WaitToUpdateScoreFelds() {
-            yield return null;
-            PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
-            bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
-            float myScore = player0IsMe ? players[0].Score : players[1].Score;
-            float otherScore = player0IsMe ? players[1].Score : players[0].Score;
+            this.ExecuteAtEndOfFrame(() => {
+                PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
+                bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
+                float myScore = player0IsMe ? players[0].Score : players[1].Score;
+                float otherScore = player0IsMe ? players[1].Score : players[0].Score;
             
-            gui.ScoreText = myScore - otherScore;
+                gui.ScoreText = myScore - otherScore;
+            });
         }
 
         private void CollideWithPlatform(IPlatform newPlatform) {
