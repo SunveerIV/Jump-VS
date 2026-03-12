@@ -23,7 +23,7 @@ Choose an IDE:
 
 Download Unity Tools: 
 - Install [Unity Hub](https://unity.com/download) 
-- Editor version [6000.0.58f2](https://unity.com/releases/editor/whats-new/6000.0.58f2) 
+- Editor version [6000.3.10f1](https://unity.com/releases/editor/whats-new/6000.3.10f1) 
 
 ## Platforms 
 - iOS is the primary target platform. 
