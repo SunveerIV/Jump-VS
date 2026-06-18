@@ -9,7 +9,7 @@ using Game.Behaviours.Platforms;
 using Game.Behaviours.Colliders;
 
 namespace Game.Behaviours.Managers {
-    public class TwoPlayerLevel : NetworkBehaviour, ILevelMultiplayer {
+    public class TwoPlayerLevel : NetworkBehaviour, ILevel {
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
@@ -118,8 +118,6 @@ namespace Game.Behaviours.Managers {
             platforms.Add(platformIndex, platform);
             platformIndex++;
         }
-        
-        public PlatformMultiplayer GetPlatformAtIndex(int platformIndex) => platforms[platformIndex];
         
         private void OnEnable() {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;

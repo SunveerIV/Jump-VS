@@ -37,7 +37,7 @@ namespace Game.Behaviours.Players {
         private SingleplayerCanvas gui;
         private Camera mainCamera;
         private PlayerScore score;
-        private ILevelMultiplayer level;
+        private ILevel level;
         
         private float cameraVelocityY;
         private bool clientInitialized;
@@ -45,7 +45,7 @@ namespace Game.Behaviours.Players {
         public float Score => networkScore.Value;
         public bool HasLost => hasLost.Value;
         
-        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ILevelMultiplayer level, ulong clientID) {
+        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ILevel level, ulong clientID) {
             PlayerMultiplayer player = Instantiate(prefab, position, Quaternion.identity);
             player.level = level;
             player.score = new PlayerScore();
