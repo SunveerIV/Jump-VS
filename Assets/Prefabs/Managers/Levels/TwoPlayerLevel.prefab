@@ -407,6 +407,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -543,6 +544,7 @@ MonoBehaviour:
   m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -702,6 +704,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   platformMultiplayerPrefab: {fileID: 1461142023510495541, guid: a655802f06aa22f4dbd219705cf52711, type: 3}
   playerMultiplayerPrefab: {fileID: 2135628697679898862, guid: eaee16bbf635bd04b920c80b91b9e371, type: 3}
+  singleplayerCanvasPrefab: {fileID: -4827545123000088766, guid: 220212de1e3ad5b41837715042ec6880, type: 3}
   killColliderPrefab: {fileID: 4082131176725640748, guid: ad485394da7e15e4f9143eed8dba464f, type: 3}
   borderPrefab: {fileID: 5513641367729638516, guid: 30e1c7b38665d9f47b01f2c22870b9fd, type: 3}
 --- !u!1 &4767463463399610886
@@ -985,6 +988,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1122,6 +1126,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1436,6 +1441,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

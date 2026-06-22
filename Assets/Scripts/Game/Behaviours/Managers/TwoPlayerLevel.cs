@@ -7,16 +7,20 @@ using Game.Interfaces;
 using Game.Behaviours.Players;
 using Game.Behaviours.Platforms;
 using Game.Behaviours.Colliders;
+using Game.UI;
+using Game.Utility;
 
 namespace Game.Behaviours.Managers {
     public class TwoPlayerLevel : NetworkBehaviour, ILevel {
 
         [SerializeField] private PlatformMultiplayer platformMultiplayerPrefab;
         [SerializeField] private PlayerMultiplayer playerMultiplayerPrefab;
+        [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
         [SerializeField] private KillCollider killColliderPrefab;
         [SerializeField] private BorderManager borderPrefab;
 
         private BorderManager borders;
+        private SingleplayerCanvas gui;
         
         private bool clientInitialized;
 
@@ -35,7 +39,9 @@ namespace Game.Behaviours.Managers {
         private void InitializeClient() {
             if (!IsClient) return;
             if (clientInitialized) return;
+            
             clientInitialized = true;
+            InitializeGui();
         }
 
         private void InitializeServer() {
@@ -55,6 +61,10 @@ namespace Game.Behaviours.Managers {
                 players.Add(player);
             }
             StartCoroutine(UpdateEverySecond());
+        }
+        
+        private void InitializeGui() {
+            gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
         }
 
         private void InitializeKillCollider() {
@@ -129,9 +139,19 @@ namespace Game.Behaviours.Managers {
         }
 
         public void UpdateScore() {
-            foreach (var player in players) {
-                player.UpdateScoreTextClientRpc();
-            }
+            UpdateScoreTextClientRpc();
+        }
+        
+        [ClientRpc]
+        public void UpdateScoreTextClientRpc() {
+            this.ExecuteAtEndOfFrame(() => {
+                PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
+                bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
+                float myScore = player0IsMe ? players[0].Score : players[1].Score;
+                float otherScore = player0IsMe ? players[1].Score : players[0].Score;
+            
+                gui.ScoreText = myScore - otherScore;
+            });
         }
 
         public void EndGame() {

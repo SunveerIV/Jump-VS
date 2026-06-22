@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using Unity.Netcode;
 using Game.Utility;
-using Game.UI;
 using Game.Settings;
 using Game.Constants;
 using Game.Behaviours.Directors;
 using Game.Behaviours.Managers;
-using Game.Behaviours.Platforms;
 using Game.Interfaces;
 using JumpVS.Core.Scoring;
 
@@ -17,7 +14,6 @@ namespace Game.Behaviours.Players {
         
         [Header("Prefabs")] 
         [SerializeField] private LineDirector lineDirectorPrefab;
-        [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
         [SerializeField] private BorderSpriteManager borderSpriteManagerPrefab;
 
         [Header("Audio")] 
@@ -34,13 +30,11 @@ namespace Game.Behaviours.Players {
         private readonly NetworkVariable<float> networkScore = new(0);
         
         //Cached References
-        private SingleplayerCanvas gui;
         private Camera mainCamera;
         private PlayerScore score;
         private ILevel level;
         
         private float cameraVelocityY;
-        private bool clientInitialized;
         
         public float Score => networkScore.Value;
         public bool HasLost => hasLost.Value;
@@ -57,7 +51,6 @@ namespace Game.Behaviours.Players {
             base.OnNetworkSpawn();
             IgnoreCollisionsWithOtherPlayers();
             SetCamera();
-            InitializeGui();
             InitializeBorderSprite();
             InitializeAudioSource();
         }
@@ -75,14 +68,6 @@ namespace Game.Behaviours.Players {
             if (!IsOwner) return;
             
             mainCamera = Camera.main;
-        }
-
-        private void InitializeGui() {
-            if (!IsOwner) return;
-            if (clientInitialized) return;
-            
-            clientInitialized = true;
-            gui = SingleplayerCanvas.Create(singleplayerCanvasPrefab);
         }
 
         private void InitializeBorderSprite() {
@@ -135,20 +120,6 @@ namespace Game.Behaviours.Players {
             this.Unstick();
             rb.linearVelocity = (directorPosition - transform.position) * Player.VELOCITY_AMPLIFIER;
             playerState.Value = PlayerState.Airborne;
-        }
-
-        [ClientRpc]
-        public void UpdateScoreTextClientRpc() {
-            if (!IsOwner) return;
-            
-            this.ExecuteAtEndOfFrame(() => {
-                PlayerMultiplayer[] players = FindObjectsByType<PlayerMultiplayer>(FindObjectsSortMode.None);
-                bool player0IsMe = players[0].OwnerClientId == NetworkManager.Singleton.LocalClientId;
-                float myScore = player0IsMe ? players[0].Score : players[1].Score;
-                float otherScore = player0IsMe ? players[1].Score : players[0].Score;
-            
-                gui.ScoreText = myScore - otherScore;
-            });
         }
 
         private void CollideWithPlatform(IPlatform newPlatform) {
