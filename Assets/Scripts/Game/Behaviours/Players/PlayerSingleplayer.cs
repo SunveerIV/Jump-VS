@@ -34,8 +34,8 @@ namespace Game.Behaviours.Players {
 
         public float Score => score.Value;
 
-        public static PlayerSingleplayer Create(PlayerSingleplayer prefab, Vector3 position, Quaternion rotation, ILevel level) {
-            var player = Instantiate(prefab, position, rotation);
+        public static PlayerSingleplayer Create(PlayerSingleplayer prefab, Vector3 position, ILevel level) {
+            var player = Instantiate(prefab, position, Quaternion.identity);
             BorderSpriteManager.Create(player.borderSpriteManagerPrefab, player.transform);
             player.level = level;
             player.score = new PlayerScore();

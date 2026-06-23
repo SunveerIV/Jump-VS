@@ -37,7 +37,7 @@ namespace Game.Behaviours.Managers {
             level.InstantiatePlatform();
             float playerStartPosX = level.platforms[0].transform.position.x;
             level.players = new List<PlayerSingleplayer>();
-            PlayerSingleplayer player = PlayerSingleplayer.Create(level.playerSingleplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), Quaternion.identity, level);
+            PlayerSingleplayer player = PlayerSingleplayer.Create(level.playerSingleplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), level);
             level.players.Add(player);
             level.StartCoroutine(level.UpdateEverySecond());
             return level;
