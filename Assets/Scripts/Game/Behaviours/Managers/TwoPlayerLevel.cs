@@ -9,6 +9,7 @@ using Game.Behaviours.Platforms;
 using Game.Behaviours.Colliders;
 using Game.UI;
 using Game.Utility;
+using JumpVS.Core;
 
 namespace Game.Behaviours.Managers {
     public class TwoPlayerLevel : NetworkBehaviour, ILevel {
@@ -18,6 +19,9 @@ namespace Game.Behaviours.Managers {
         [SerializeField] private SingleplayerCanvas singleplayerCanvasPrefab;
         [SerializeField] private KillCollider killColliderPrefab;
         [SerializeField] private BorderManager borderPrefab;
+        
+        private readonly Team team1 = new Team(0);
+        private readonly Team team2 = new Team(1);
 
         private BorderManager borders;
         private SingleplayerCanvas gui;
@@ -46,7 +50,7 @@ namespace Game.Behaviours.Managers {
 
         private void InitializeServer() {
             if (!IsServer) return;
-            if (NetworkManager.Singleton.ConnectedClients.Count < 2) return;
+            if (NetworkManager.Singleton.ConnectedClients.Count != 2) return;
             
             InitializeKillCollider();
             InitializeBorders();
@@ -56,10 +60,15 @@ namespace Game.Behaviours.Managers {
             highestPlatform = -1f;
             InstantiatePlatform();
             float playerStartPosX = platforms[0].transform.position.x;
-            foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds) {
-                PlayerMultiplayer player = PlayerMultiplayer.Create(playerMultiplayerPrefab, new Vector2(playerStartPosX, Level.PLAYER_START_Y), this, clientID);
-                players.Add(player);
-            }
+
+            Vector2 startPos = new Vector2(playerStartPosX, Level.PLAYER_START_Y);
+            
+            var player1 = PlayerMultiplayer.Create(playerMultiplayerPrefab, startPos, this, NetworkManager.Singleton.ConnectedClientsIds[0], team1);
+            var player2 = PlayerMultiplayer.Create(playerMultiplayerPrefab, startPos, this, NetworkManager.Singleton.ConnectedClientsIds[1], team2);
+
+            players.Add(player1);
+            players.Add(player2);
+            
             StartCoroutine(UpdateEverySecond());
         }
         

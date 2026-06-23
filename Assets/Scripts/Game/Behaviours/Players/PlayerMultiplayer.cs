@@ -7,6 +7,7 @@ using Game.Constants;
 using Game.Behaviours.Directors;
 using Game.Behaviours.Managers;
 using Game.Interfaces;
+using JumpVS.Core;
 using JumpVS.Core.Scoring;
 
 namespace Game.Behaviours.Players {
@@ -36,13 +37,15 @@ namespace Game.Behaviours.Players {
         
         private float cameraVelocityY;
         
+        public Team Team { get; private set; }
         public float Score => networkScore.Value;
         public bool HasLost => hasLost.Value;
         
-        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ILevel level, ulong clientID) {
+        public static PlayerMultiplayer Create(PlayerMultiplayer prefab, Vector3 position, ILevel level, ulong clientID, Team team) {
             PlayerMultiplayer player = Instantiate(prefab, position, Quaternion.identity);
             player.level = level;
             player.score = new PlayerScore();
+            player.Team = team;
             player.NetworkObject.SpawnAsPlayerObject(clientID, true);
             return player;
         }
