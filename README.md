@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="300" src="Assets/BuildProfileAssets/defaultIcon1024.png">
+  <img width="300" src="game/Assets/BuildProfileAssets/defaultIcon1024.png">
 </p>
 
 # Jump VS 
