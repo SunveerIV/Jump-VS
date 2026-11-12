@@ -5,3 +5,11 @@
 *.psd filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
+
+*.shader linguist-detectable=false
+*.hlsl linguist-detectable=false
+*.hlsli linguist-detectable=false
+*.compute linguist-detectable=false
+*.cginc linguist-detectable=false
+*.raytrace linguist-detectable=false
+*.prefab linguist-detectable=false
